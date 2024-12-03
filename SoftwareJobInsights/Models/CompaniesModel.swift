@@ -26,7 +26,7 @@ class Companies {
         
         guard let url = Bundle.main.url(forResource: "Levels_Fyi_Salary_Data", withExtension: "csv"),
               let content = try? String(contentsOf: url) else {
-            print("Failed to load CSV")
+            print("Failed to load Levels CSV")
             return [:]
         }
         
@@ -36,7 +36,11 @@ class Companies {
         for (index, row) in rows.enumerated() {
             if index == 0 { continue }
             let columns = parseCSVLine(row)
-            
+                        
+            if columns.count != headerRow.count {
+                continue
+            }
+                        
             let company = columns[1]
             let level = columns[2]
             let title = columns[3]

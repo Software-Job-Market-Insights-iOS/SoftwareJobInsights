@@ -11,11 +11,12 @@
 		357C20052CFF804000DDEDA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 357C20042CFF804000DDEDA8 /* Assets.xcassets */; };
 		357C20082CFF804000DDEDA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 357C20072CFF804000DDEDA8 /* Preview Assets.xcassets */; };
 		357C20102CFF830000DDEDA8 /* Levels_Fyi_Salary_Data.csv in Resources */ = {isa = PBXBuildFile; fileRef = 357C200F2CFF82FF00DDEDA8 /* Levels_Fyi_Salary_Data.csv */; };
-		357C20122CFF830500DDEDA8 /* SofwareDeveloperIncomeExpensesperUSACity.csv in Resources */ = {isa = PBXBuildFile; fileRef = 357C20112CFF830500DDEDA8 /* SofwareDeveloperIncomeExpensesperUSACity.csv */; };
+		357C20122CFF830500DDEDA8 /* SoftwareDeveloperIncomeExpensesperUSACity.csv in Resources */ = {isa = PBXBuildFile; fileRef = 357C20112CFF830500DDEDA8 /* SoftwareDeveloperIncomeExpensesperUSACity.csv */; };
 		357C20172CFF832C00DDEDA8 /* MainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357C20162CFF832C00DDEDA8 /* MainModel.swift */; };
 		357C20192CFF84AE00DDEDA8 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357C20182CFF84AE00DDEDA8 /* MainViewModel.swift */; };
 		357C201B2CFF84C900DDEDA8 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357C201A2CFF84C900DDEDA8 /* MainView.swift */; };
 		35B267462CFF8D2400E76C0F /* CompaniesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B267452CFF8D2400E76C0F /* CompaniesModel.swift */; };
+		35B267482CFF92FE00E76C0F /* CitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B267472CFF92FE00E76C0F /* CitiesModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,11 +25,12 @@
 		357C20042CFF804000DDEDA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		357C20072CFF804000DDEDA8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		357C200F2CFF82FF00DDEDA8 /* Levels_Fyi_Salary_Data.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Levels_Fyi_Salary_Data.csv; path = ../../../Downloads/Levels_Fyi_Salary_Data.csv; sourceTree = "<group>"; };
-		357C20112CFF830500DDEDA8 /* SofwareDeveloperIncomeExpensesperUSACity.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SofwareDeveloperIncomeExpensesperUSACity.csv; path = ../../../Downloads/SofwareDeveloperIncomeExpensesperUSACity.csv; sourceTree = "<group>"; };
+		357C20112CFF830500DDEDA8 /* SoftwareDeveloperIncomeExpensesperUSACity.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SoftwareDeveloperIncomeExpensesperUSACity.csv; path = ../../../Downloads/SoftwareDeveloperIncomeExpensesperUSACity.csv; sourceTree = "<group>"; };
 		357C20162CFF832C00DDEDA8 /* MainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModel.swift; sourceTree = "<group>"; };
 		357C20182CFF84AE00DDEDA8 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		357C201A2CFF84C900DDEDA8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		35B267452CFF8D2400E76C0F /* CompaniesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompaniesModel.swift; sourceTree = "<group>"; };
+		35B267472CFF92FE00E76C0F /* CitiesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				357C200F2CFF82FF00DDEDA8 /* Levels_Fyi_Salary_Data.csv */,
-				357C20112CFF830500DDEDA8 /* SofwareDeveloperIncomeExpensesperUSACity.csv */,
+				357C20112CFF830500DDEDA8 /* SoftwareDeveloperIncomeExpensesperUSACity.csv */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -94,6 +96,7 @@
 			children = (
 				357C20162CFF832C00DDEDA8 /* MainModel.swift */,
 				35B267452CFF8D2400E76C0F /* CompaniesModel.swift */,
+				35B267472CFF92FE00E76C0F /* CitiesModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -174,7 +177,7 @@
 			files = (
 				357C20102CFF830000DDEDA8 /* Levels_Fyi_Salary_Data.csv in Resources */,
 				357C20082CFF804000DDEDA8 /* Preview Assets.xcassets in Resources */,
-				357C20122CFF830500DDEDA8 /* SofwareDeveloperIncomeExpensesperUSACity.csv in Resources */,
+				357C20122CFF830500DDEDA8 /* SoftwareDeveloperIncomeExpensesperUSACity.csv in Resources */,
 				357C20052CFF804000DDEDA8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -190,6 +193,7 @@
 				357C20172CFF832C00DDEDA8 /* MainModel.swift in Sources */,
 				357C201B2CFF84C900DDEDA8 /* MainView.swift in Sources */,
 				357C20192CFF84AE00DDEDA8 /* MainViewModel.swift in Sources */,
+				35B267482CFF92FE00E76C0F /* CitiesModel.swift in Sources */,
 				35B267462CFF8D2400E76C0F /* CompaniesModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
