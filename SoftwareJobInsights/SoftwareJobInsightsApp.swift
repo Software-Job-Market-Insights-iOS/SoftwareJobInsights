@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct SoftwareJobInsightsApp: App {
+    var mainViewModel = MainViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView().environmentObject(mainViewModel)
         }
     }
 }
