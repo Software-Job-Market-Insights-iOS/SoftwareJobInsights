@@ -9,7 +9,25 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        Text("Hello")
+        TabView {
+//            MapView()
+//                .tabItem {
+//                    Image(systemName: "map")
+//                    Text("Map")
+//                }
+//            
+            ListView()
+                .tabItem {
+                    Image(systemName: "list.bullet")
+                    Text("List")
+                }
+            
+            ComparisonView()
+                .tabItem {
+                    Image(systemName: "chart.bar.xaxis")
+                    Text("Compare")
+                }
+        }
     }
 }
 

@@ -8,6 +8,8 @@
 import Foundation
 
 struct City {
+    let id: Int
+    let name: String
     let meanSalaryAdjusted: Double
     let meanSalaryUnadjusted: Double
     let meanSalaryUnadjustedAllOccupations: Double
@@ -17,7 +19,7 @@ struct City {
     let rentAverage: Double
 }
 
-class Cities {
+class CitiesModel {
     var cities: [String: City] = loadCitiesFromCSV()
     
     private static func loadCitiesFromCSV() -> [String: City] {
@@ -31,7 +33,7 @@ class Cities {
         
         let rows = content.components(separatedBy: .newlines)
         let headerRow = parseCSVLine(rows[0])
-                
+                        
         for (index, row) in rows.enumerated() {
             if index == 0 { continue }
             let columns = parseCSVLine(row)
@@ -54,6 +56,8 @@ class Cities {
             let rentAvg = Double(columns[9])!.rounded(to: 1)
             
             let cityObject = City(
+                id: index,
+                name: city,
                 meanSalaryAdjusted: meanSalaryAdjusted,
                 meanSalaryUnadjusted: meanSalaryUnadjusted,
                 meanSalaryUnadjustedAllOccupations: meanSalaryUnadjustedAllOccups,

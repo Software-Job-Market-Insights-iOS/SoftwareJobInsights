@@ -18,7 +18,7 @@ struct Company {
     var jobs: [LevelsElement]
 }
 
-class Companies {
+class CompaniesModel {
     var companies: [String: Company] = loadCompaniesFromCSV()
     
     private static func loadCompaniesFromCSV() -> [String: Company] {
@@ -57,7 +57,7 @@ class Companies {
             if companies[company] == nil {
                 companies[company] = Company(jobs: [])
             }
-            
+                        
             companies[company]?.jobs.append(job)
         }
         

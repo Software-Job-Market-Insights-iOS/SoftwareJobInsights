@@ -34,6 +34,7 @@ func parseCSVLine(_ line: String) -> [String] {
 
 
 class MainModel {
-    let companies: Companies = Companies()
-    let cities: Cities = Cities()
+    let companies: CompaniesModel = CompaniesModel()
+    let cities: CitiesModel = CitiesModel()
+    let locations: LocationsModel = LocationsModel()
 }
