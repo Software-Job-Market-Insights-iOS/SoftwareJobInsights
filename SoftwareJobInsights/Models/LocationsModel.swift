@@ -1,14 +1,7 @@
-//
-//  LocationsModel.swift
-//  SoftwareJobInsights
-//
-//  Created by Caverly, Quinn on 12/5/24.
-//
 import Foundation
 
-struct LocationCity {
-    let city: String
-    let stateId: String
+struct LocationCity: Hashable {
+    let cityName: String
     let fips: Int
     let latitude: Float
     let longitude: Float
@@ -17,15 +10,16 @@ struct LocationCity {
 }
 
 class LocationsModel {
-    var locations: [LocationCity] = loadLocationsFromCSV()
+    // Using dictionary with city+state as key for unique identification
+    var locations: [String: LocationCity] = loadLocationsFromCSV()
     
-    private static func loadLocationsFromCSV() -> [LocationCity] {
-        var locations: [LocationCity] = []
+    private static func loadLocationsFromCSV() -> [String: LocationCity] {
+        var locations: [String: LocationCity] = [:]
         
         guard let url = Bundle.main.url(forResource: "uscities", withExtension: "csv"),
               let content = try? String(contentsOf: url) else {
             print("Failed to load Locations CSV")
-            return []
+            return [:]
         }
         
         let rows = content.components(separatedBy: .newlines)
@@ -50,17 +44,19 @@ class LocationsModel {
             let population = Int(columns[8])!
             let density = Int(columns[9])!
             
+            let key = "\(city), \(stateId)"
+            
             let locationCity = LocationCity(
-                city: city,
-                stateId: stateId,
+                cityName: key,
                 fips: fips,
                 latitude: latitude,
                 longitude: longitude,
                 population: population,
                 density: density
             )
-                        
-            locations.append(locationCity)
+            
+            // Create a unique key combining city and state
+            locations[key] = locationCity
         }
         
         return locations

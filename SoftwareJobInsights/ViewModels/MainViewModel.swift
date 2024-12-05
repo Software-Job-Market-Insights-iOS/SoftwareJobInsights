@@ -9,14 +9,4 @@ import Foundation
 
 class MainViewModel: ObservableObject {
     let mainModel: MainModel = MainModel()
-    
-    // Cities Specific Getters
-    func getAllCityNames() -> [String] {
-        Array(mainModel.cities.cities.keys)
-    }
-    
-    
-    
-    
-    
 }

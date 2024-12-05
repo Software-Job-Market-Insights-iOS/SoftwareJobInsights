@@ -20,6 +20,7 @@
 		358F6FC52D02520B001EE8F5 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358F6FC42D02520B001EE8F5 /* ComparisonView.swift */; };
 		358F6FC92D025848001EE8F5 /* uscities.csv in Resources */ = {isa = PBXBuildFile; fileRef = 358F6FC82D025848001EE8F5 /* uscities.csv */; };
 		358F6FCB2D0258B9001EE8F5 /* LocationsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358F6FCA2D0258B9001EE8F5 /* LocationsModel.swift */; };
+		358F6FCD2D025DCC001EE8F5 /* CoalescedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358F6FCC2D025DCC001EE8F5 /* CoalescedViewModel.swift */; };
 		35B267462CFF8D2400E76C0F /* CompaniesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B267452CFF8D2400E76C0F /* CompaniesModel.swift */; };
 		35B267482CFF92FE00E76C0F /* CitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B267472CFF92FE00E76C0F /* CitiesModel.swift */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 		358F6FC42D02520B001EE8F5 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
 		358F6FC82D025848001EE8F5 /* uscities.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = uscities.csv; path = ../../../Downloads/uscities.csv; sourceTree = "<group>"; };
 		358F6FCA2D0258B9001EE8F5 /* LocationsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsModel.swift; sourceTree = "<group>"; };
+		358F6FCC2D025DCC001EE8F5 /* CoalescedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoalescedViewModel.swift; sourceTree = "<group>"; };
 		35B267452CFF8D2400E76C0F /* CompaniesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompaniesModel.swift; sourceTree = "<group>"; };
 		35B267472CFF92FE00E76C0F /* CitiesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -128,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				357C20182CFF84AE00DDEDA8 /* MainViewModel.swift */,
+				358F6FCC2D025DCC001EE8F5 /* CoalescedViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -210,6 +213,7 @@
 				358F6FC12D0251F2001EE8F5 /* MapView.swift in Sources */,
 				357C20012CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift in Sources */,
 				357C20172CFF832C00DDEDA8 /* MainModel.swift in Sources */,
+				358F6FCD2D025DCC001EE8F5 /* CoalescedViewModel.swift in Sources */,
 				358F6FC52D02520B001EE8F5 /* ComparisonView.swift in Sources */,
 				357C201B2CFF84C900DDEDA8 /* MainView.swift in Sources */,
 				357C20192CFF84AE00DDEDA8 /* MainViewModel.swift in Sources */,
