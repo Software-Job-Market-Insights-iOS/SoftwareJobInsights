@@ -10,7 +10,7 @@ import SwiftUI
 struct MainView: View {
     var body: some View {
         TabView {
-            MapView()
+            MapContainer()
                 .tabItem {
                     Image(systemName: "map")
                     Text("Map")
