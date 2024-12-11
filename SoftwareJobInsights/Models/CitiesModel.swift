@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct City {
+struct CityBackend {
     let id: Int
     let name: String
     let meanSalaryAdjusted: Double
@@ -20,10 +20,10 @@ struct City {
 }
 
 class CitiesModel {
-    var cities: [String: City] = loadCitiesFromCSV()
+    var cities: [String: CityBackend] = loadCitiesFromCSV()
     
-    private static func loadCitiesFromCSV() -> [String: City] {
-        var cities: [String: City] = [:]
+    private static func loadCitiesFromCSV() -> [String: CityBackend] {
+        var cities: [String: CityBackend] = [:]
         
         guard let url = Bundle.main.url(forResource: "SoftwareDeveloperIncomeExpensesperUSACity", withExtension: "csv"),
               let content = try? String(contentsOf: url) else {
@@ -55,7 +55,7 @@ class CitiesModel {
             let costOfLivingAvg = Double(columns[8])!.rounded(to: 1)
             let rentAvg = Double(columns[9])!.rounded(to: 1)
             
-            let cityObject = City(
+            let cityObject = CityBackend(
                 id: index,
                 name: city,
                 meanSalaryAdjusted: meanSalaryAdjusted,

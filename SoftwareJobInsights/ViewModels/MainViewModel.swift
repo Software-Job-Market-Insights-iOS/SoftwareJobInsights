@@ -8,5 +8,11 @@
 import Foundation
 
 class MainViewModel: ObservableObject {
-    let mainModel: MainModel = MainModel()
+    let mainModel: MainModel
+    let cities: [City]
+    
+    init() {
+        self.mainModel = MainModel()
+        self.cities = Self.initAllCities(mainModel: mainModel)
+    }
 }
