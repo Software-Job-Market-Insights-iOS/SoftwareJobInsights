@@ -27,17 +27,59 @@ enum FilterType: Identifiable {
         }
     }
     
-    func color(for value: Double) -> Color {
+    struct ColorConfig {
+        let lowColor: (Double, Double, Double)
+        let highColor: (Double, Double, Double)
+        let minValue: Double
+        let maxValue: Double
+    }
+
+    var colorConfig: ColorConfig {
         switch self {
         case .adjustedSalary:
-            return Color(hue: 0.3, saturation: min(value/200000, 1), brightness: 0.8)
+            return ColorConfig(
+                lowColor: (0.7, 0.9, 0.7),   // Light green
+                highColor: (0, 0.6, 0),      // Dark green
+                minValue: 80_000,
+                maxValue: 200_000
+            )
         case .unadjustedSalary:
-            return Color(hue: 0.6, saturation: min(value/200000, 1), brightness: 0.8)
+            return ColorConfig(
+                lowColor: (0.7, 0.7, 1.0),   // Light blue
+                highColor: (0, 0, 0.8),      // Dark blue
+                minValue: 100_000,
+                maxValue: 250_000
+            )
         case .softwareJobs:
-            return Color(hue: 0.9, saturation: min(Double(value)/10000, 1), brightness: 0.8)
+            return ColorConfig(
+                lowColor: (1.0, 0.7, 1.0),   // Light purple
+                highColor: (0.5, 0, 0.5),    // Dark purple
+                minValue: 1_000,
+                maxValue: 50_000
+            )
         case .homePrice:
-            return Color(hue: 0.1, saturation: min(Double(value)/1000000, 1), brightness: 0.8)
+            return ColorConfig(
+                lowColor: (1.0, 0.9, 0.7),   // Light orange
+                highColor: (0.8, 0.4, 0),    // Dark orange
+                minValue: 200_000,
+                maxValue: 1_000_000
+            )
         }
+    }
+
+    func color(for value: Double) -> Color {
+        let config = colorConfig
+        
+        // Normalize between 0 and 1 using predefined ranges
+        let normalized = (value - config.minValue) / (config.maxValue - config.minValue)
+        let clamped = max(0, min(1, normalized))  // Ensure value is between 0 and 1
+        
+        // Interpolate between the two colors using tuples
+        let r = config.lowColor.0 + (config.highColor.0 - config.lowColor.0) * clamped
+        let g = config.lowColor.1 + (config.highColor.1 - config.lowColor.1) * clamped
+        let b = config.lowColor.2 + (config.highColor.2 - config.lowColor.2) * clamped
+        
+        return Color(red: r, green: g, blue: b)
     }
     
     func getValue(from city: City) -> Double {
@@ -228,7 +270,7 @@ struct MapView: View {
                 }
             }
         }
-        .mapStyle(.standard)
+        .mapStyle(.standard(elevation: .realistic, pointsOfInterest: [], showsTraffic: false))
     }
 }
 
