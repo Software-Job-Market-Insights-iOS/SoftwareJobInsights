@@ -1,30 +1,70 @@
 import SwiftUI
 import MapKit
 
+enum FilterType: Identifiable {
+    case adjustedSalary
+    case unadjustedSalary
+    case softwareJobs
+    case homePrice
+    
+    var id: Self { self }
+    
+    var title: String {
+        switch self {
+        case .adjustedSalary: return "Adjusted Salary"
+        case .unadjustedSalary: return "Unadjusted Salary"
+        case .softwareJobs: return "Software Jobs"
+        case .homePrice: return "Home Price"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .adjustedSalary: return "dollarsign.circle.fill"
+        case .unadjustedSalary: return "banknote.fill"
+        case .softwareJobs: return "laptopcomputer"
+        case .homePrice: return "house.fill"
+        }
+    }
+    
+    func color(for value: Double) -> Color {
+        switch self {
+        case .adjustedSalary:
+            return Color(hue: 0.3, saturation: min(value/200000, 1), brightness: 0.8)
+        case .unadjustedSalary:
+            return Color(hue: 0.6, saturation: min(value/200000, 1), brightness: 0.8)
+        case .softwareJobs:
+            return Color(hue: 0.9, saturation: min(Double(value)/10000, 1), brightness: 0.8)
+        case .homePrice:
+            return Color(hue: 0.1, saturation: min(Double(value)/1000000, 1), brightness: 0.8)
+        }
+    }
+    
+    func getValue(from city: City) -> Double {
+        switch self {
+        case .adjustedSalary: return city.meanSalaryAdjusted
+        case .unadjustedSalary: return city.meanSalaryUnadjusted
+        case .softwareJobs: return Double(city.quantitySoftwareJobs)
+        case .homePrice: return Double(city.medianHomePrice)
+        }
+    }
+    
+    func formatValue(_ value: Double) -> String {
+        switch self {
+        case .adjustedSalary, .unadjustedSalary, .homePrice:
+            return "$\(Int(value).formatted())"
+        case .softwareJobs:
+            return "\(Int(value).formatted())"
+        }
+    }
+}
 
 struct MapContainer: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     @State private var selectedFilter: FilterType = .unadjustedSalary
     @State private var numberOfCities: Int = 30
     @State private var showFilters = false
-    
-    enum FilterType: Identifiable {
-        case adjustedSalary
-        case unadjustedSalary
-        case softwareJobs
-        case homePrice
-        
-        var id: Self { self }
-        
-        var title: String {
-            switch self {
-            case .adjustedSalary: return "Adjusted Salary"
-            case .unadjustedSalary: return "Unadjusted Salary"
-            case .softwareJobs: return "Quantity of Software Jobs"
-            case .homePrice: return "Home Price"
-            }
-        }
-    }
+
     
     var filteredCities: [City] {
         switch selectedFilter {
@@ -41,7 +81,7 @@ struct MapContainer: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            MapView(cities: filteredCities)
+            MapView(cities: filteredCities, filterType: selectedFilter)
             
             VStack(alignment: .leading, spacing: 10) {
                 Button(action: { showFilters.toggle() }) {
@@ -90,9 +130,87 @@ struct MapContainer: View {
     }
 }
 
-// Modified MapView to accept cities as parameter
+struct CustomAnnotation: View {
+    let city: City
+    let filterType: FilterType
+    @State private var isHovered = false
+    @State private var showDetails = false
+    
+    var body: some View {
+        VStack {
+            Image(systemName: filterType.icon)
+                .foregroundColor(filterType.color(for: filterType.getValue(from: city)))
+                .font(.title)
+                .onHover { hovering in
+                    withAnimation {
+                        isHovered = hovering
+                    }
+                }
+                .onTapGesture {
+                    showDetails.toggle()
+                }
+            
+            if isHovered {
+                VStack(spacing: 2) {
+                    Text(city.name)
+                        .font(.caption)
+                    Text(filterType.formatValue(filterType.getValue(from: city)))
+                        .font(.caption2)
+                }
+                .padding(4)
+                .background(.white.opacity(0.9))
+                .cornerRadius(4)
+            }
+        }
+        .sheet(isPresented: $showDetails) {
+            CityDetailView(city: city)
+        }
+    }
+}
+
+struct CityDetailView: View {
+    let city: City
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationView {
+            List {
+                Section("Salary Information") {
+                    LabeledContent("Adjusted Salary", value: "$\(Int(city.meanSalaryAdjusted).formatted())")
+                    LabeledContent("Unadjusted Salary", value: "$\(Int(city.meanSalaryUnadjusted).formatted())")
+                }
+                
+                Section("Housing") {
+                    LabeledContent("Median Home Price", value: "$\(city.medianHomePrice.formatted())")
+                    LabeledContent("Average Rent", value: "$\(Int(city.rentAverage).formatted())")
+                }
+                
+                Section("Jobs & Economy") {
+                    LabeledContent("Software Jobs", value: city.quantitySoftwareJobs.formatted())
+                    LabeledContent("Cost of Living Index", value: String(format: "%.1f", city.costOfLivingAverage))
+                }
+                
+                Section("Demographics") {
+                    LabeledContent("Population", value: city.population.formatted())
+                    LabeledContent("Density", value: "\(city.density.formatted())/sq mi")
+                }
+            }
+            .navigationTitle(city.name)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+}
+
 struct MapView: View {
     let cities: [City]
+    let filterType: FilterType
     
     @State private var position: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 39.8283, longitude: -98.5795),
@@ -106,16 +224,7 @@ struct MapView: View {
                     latitude: Double(city.latitude),
                     longitude: Double(city.longitude)
                 )) {
-                    VStack {
-                        Image(systemName: "mappin.circle.fill")
-                            .foregroundColor(.red)
-                            .font(.title)
-                        
-                        Text(city.name)
-                            .font(.caption)
-                            .background(Color.white.opacity(0.8))
-                            .cornerRadius(4)
-                    }
+                    CustomAnnotation(city: city, filterType: filterType)
                 }
             }
         }
