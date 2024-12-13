@@ -9,13 +9,12 @@ import Foundation
 
 struct LevelsElement {
     let level: String
-    let city: String
     let totalYearlyComp: Int
     let title: String
 }
 
 struct Company {
-    var jobs: [LevelsElement]
+    var cityJobs: [String: [LevelsElement]]
 }
 
 class CompaniesModel {
@@ -49,16 +48,19 @@ class CompaniesModel {
             
             let job = LevelsElement(
                 level: level,
-                city: city,
                 totalYearlyComp: totalYearlyComp,
                 title: title
             )
             
             if companies[company] == nil {
-                companies[company] = Company(jobs: [])
+                companies[company] = Company(cityJobs: [:])
             }
-                        
-            companies[company]?.jobs.append(job)
+            
+            if companies[company]!.cityJobs[city] == nil {
+                companies[company]!.cityJobs[city] = []
+            }
+                                    
+            companies[company]!.cityJobs[city]!.append(job)
         }
         
         return companies

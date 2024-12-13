@@ -15,6 +15,8 @@ class MainViewModel: ObservableObject {
     @Published var selectedFilter: FilterType = .unadjustedSalary
     @Published var numberOfCities: Int = 30
     
+    @Published var isCompanyMode = false
+    
     init() {
         self.mainModel = MainModel()
         self.cities = Self.initAllCities(mainModel: mainModel)
@@ -57,5 +59,9 @@ class MainViewModel: ObservableObject {
        case .softwareJobs:
            return city.quantitySoftwareJobs.formatted()
        }
+    }
+    
+    func toggleMode() {
+        isCompanyMode.toggle()
     }
 }

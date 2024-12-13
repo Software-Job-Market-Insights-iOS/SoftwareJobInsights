@@ -66,7 +66,7 @@ class CitiesModel {
                 costOfLivingAverage: costOfLivingAvg,
                 rentAverage: rentAvg
             )
-            
+                        
             cities[city] = cityObject
         }
         

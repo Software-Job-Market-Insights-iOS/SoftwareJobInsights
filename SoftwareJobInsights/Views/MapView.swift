@@ -9,6 +9,7 @@ struct MapContainer: View {
         ZStack(alignment: .topLeading) {
             MapView(cities: mainViewModel.filteredCities, filterType: mainViewModel.selectedFilter)
             
+            
             VStack(alignment: .leading, spacing: 10) {
                 Button(action: { showFilters.toggle() }) {
                     Label(showFilters ? "Hide Filters" : "Show Filters",
@@ -49,6 +50,19 @@ struct MapContainer: View {
                 }
             }
             .padding()
+            
+            VStack {
+                Button(action: { mainViewModel.toggleMode() }) {
+                    Label(mainViewModel.isCompanyMode ? "Company Mode" : "City Mode",
+                          systemImage: mainViewModel.isCompanyMode ? "building.2" : "map")
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(10)
+                }
+                Spacer()
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
     }
 }
