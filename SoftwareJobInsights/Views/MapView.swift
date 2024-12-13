@@ -1,7 +1,7 @@
 import SwiftUI
 import MapKit
 
-enum FilterType: Identifiable {
+enum FilterTypeOriginal: Identifiable {
     case adjustedSalary
     case unadjustedSalary
     case softwareJobs
@@ -27,45 +27,6 @@ enum FilterType: Identifiable {
         }
     }
     
-    struct ColorConfig {
-        let lowColor: (Double, Double, Double)
-        let highColor: (Double, Double, Double)
-        let minValue: Double
-        let maxValue: Double
-    }
-
-    var colorConfig: ColorConfig {
-        switch self {
-        case .adjustedSalary:
-            return ColorConfig(
-                lowColor: (0.7, 0.9, 0.7),   // Light green
-                highColor: (0, 0.6, 0),      // Dark green
-                minValue: 80_000,
-                maxValue: 200_000
-            )
-        case .unadjustedSalary:
-            return ColorConfig(
-                lowColor: (0.7, 0.7, 1.0),   // Light blue
-                highColor: (0, 0, 0.8),      // Dark blue
-                minValue: 100_000,
-                maxValue: 250_000
-            )
-        case .softwareJobs:
-            return ColorConfig(
-                lowColor: (1.0, 0.7, 1.0),   // Light purple
-                highColor: (0.5, 0, 0.5),    // Dark purple
-                minValue: 1_000,
-                maxValue: 50_000
-            )
-        case .homePrice:
-            return ColorConfig(
-                lowColor: (1.0, 0.9, 0.7),   // Light orange
-                highColor: (0.8, 0.4, 0),    // Dark orange
-                minValue: 200_000,
-                maxValue: 1_000_000
-            )
-        }
-    }
 
     func color(for value: Double) -> Color {
         let config = colorConfig
