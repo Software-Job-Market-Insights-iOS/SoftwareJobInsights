@@ -7,9 +7,37 @@
 
 import Foundation
 
+enum MapLocation: Identifiable {
+    case city(City)
+    case companyCity(CompanyCity)
+    
+    var id: Int {
+        switch self {
+        case .city(let city): return city.id
+        case .companyCity(let companyCity): return companyCity.id
+        }
+    }
+    
+    // Common properties that both types share
+    var name: String {
+        switch self {
+        case .city(let city): return city.name
+        case .companyCity(let companyCity): return companyCity.name
+        }
+    }
+    
+    var coordinate: (latitude: Float, longitude: Float) {
+        switch self {
+        case .city(let city):
+            return (city.latitude, city.longitude)
+        case .companyCity(let companyCity):
+            return (companyCity.latitude, companyCity.longitude)
+        }
+    }
+}
 
 struct City: Identifiable {
-    let id: Int  // Add this line
+    let id: Int
     let name: String
     let meanSalaryAdjusted: Double
     let meanSalaryUnadjusted: Double
@@ -23,6 +51,17 @@ struct City: Identifiable {
     let longitude: Float
     let population: Int
     let density: Int
+}
+
+struct CompanyCity: Identifiable {
+    let id: Int
+    let name: String
+    
+    let averageTotalYearlyComp: Double
+    let numOfJobs: Int
+    
+    let latitude: Float
+    let longitude: Float
 }
 
 
@@ -87,5 +126,26 @@ extension MainViewModel {
             .sorted { $0.medianHomePrice > $1.medianHomePrice }
             .prefix(num)
             .map { $0 }
+    }
+    
+    func getTopCompanyCitiesByTotalYearlyComp(num: Int) -> [CompanyCity] {
+        let company = mainModel.companies.companies[selectedCompany]!
+        
+        let citySummaries = company.citySummaries
+            .values
+            .sorted { $0.totalTotalYearlyComp / $0.numOfJobs > $1.totalTotalYearlyComp / $1.numOfJobs }
+            .prefix(num)
+            .map { $0 }
+        
+        var companyCities: [CompanyCity] = []
+        for citySummary in citySummaries {
+            let loc = mainModel.locations.locations[citySummary.city]!
+            
+            let companyCity = CompanyCity(id: loc.fips, name: citySummary.city,averageTotalYearlyComp: Double(citySummary.totalTotalYearlyComp / citySummary.numOfJobs), numOfJobs: citySummary.numOfJobs, latitude: loc.latitude, longitude: loc.longitude)
+            
+            companyCities.append(companyCity)
+        }
+        
+        return companyCities
     }
 }

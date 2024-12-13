@@ -16,6 +16,7 @@ class MainViewModel: ObservableObject {
     @Published var numberOfCities: Int = 30
     
     @Published var isCompanyMode = false
+    @Published var selectedCompany = "Apple"
     
     init() {
         self.mainModel = MainModel()
@@ -23,16 +24,25 @@ class MainViewModel: ObservableObject {
         self.colorViewModel = ColorViewModel(cities: self.cities)
     }
     
-    var filteredCities: [City] {
-        switch selectedFilter {
-        case .adjustedSalary:
-            return getTopCitiesByAdjustedSalary(num: numberOfCities)
-        case .unadjustedSalary:
-            return getTopCitiesByUnadjustedSalary(num: numberOfCities)
-        case .softwareJobs:
-            return getTopCitiesBySoftwareJobs(num: numberOfCities)
-        case .homePrice:
-            return getTopCitiesByMedianHomePrice(num: numberOfCities)
+    func getCurrentLocations(num: Int) -> [MapLocation] {
+        if isCompanyMode {
+            return getTopCompanyCitiesByTotalYearlyComp(num: num)
+                .map { MapLocation.companyCity($0) }
+        } else {
+            switch selectedFilter {
+            case .adjustedSalary:
+                return getTopCitiesByAdjustedSalary(num: num)
+                    .map { MapLocation.city($0) }
+            case .unadjustedSalary:
+                return getTopCitiesByUnadjustedSalary(num: num)
+                    .map { MapLocation.city($0) }
+            case .softwareJobs:
+                return getTopCitiesBySoftwareJobs(num: num)
+                    .map { MapLocation.city($0) }
+            case .homePrice:
+                return getTopCitiesByMedianHomePrice(num: num)
+                    .map { MapLocation.city($0) }
+            }
         }
     }
     

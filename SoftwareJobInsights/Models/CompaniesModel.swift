@@ -13,8 +13,16 @@ struct LevelsElement {
     let title: String
 }
 
+struct CompanyCitySummary {
+    let city: String
+    var totalTotalYearlyComp: Int
+    var numOfJobs: Int
+}
+
 struct Company {
+    let company: String
     var cityJobs: [String: [LevelsElement]]
+    var citySummaries: [String: CompanyCitySummary]
 }
 
 class CompaniesModel {
@@ -53,14 +61,19 @@ class CompaniesModel {
             )
             
             if companies[company] == nil {
-                companies[company] = Company(cityJobs: [:])
+                companies[company] = Company(company: company, cityJobs: [:], citySummaries: [:])
             }
             
             if companies[company]!.cityJobs[city] == nil {
                 companies[company]!.cityJobs[city] = []
             }
+            if companies[company]!.citySummaries[city] == nil {
+                companies[company]!.citySummaries[city] = CompanyCitySummary(city: city, totalTotalYearlyComp: 0, numOfJobs: 0)
+            }
                                     
             companies[company]!.cityJobs[city]!.append(job)
+            companies[company]!.citySummaries[city]!.totalTotalYearlyComp += totalYearlyComp
+            companies[company]!.citySummaries[city]!.numOfJobs += 1
         }
         
         return companies
