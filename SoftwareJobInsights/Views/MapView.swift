@@ -1,90 +1,13 @@
 import SwiftUI
 import MapKit
 
-enum FilterTypeOriginal: Identifiable {
-    case adjustedSalary
-    case unadjustedSalary
-    case softwareJobs
-    case homePrice
-    
-    var id: Self { self }
-    
-    var title: String {
-        switch self {
-        case .adjustedSalary: return "Adjusted Salary"
-        case .unadjustedSalary: return "Unadjusted Salary"
-        case .softwareJobs: return "Software Jobs"
-        case .homePrice: return "Home Price"
-        }
-    }
-    
-    var icon: String {
-        switch self {
-        case .adjustedSalary: return "dollarsign.circle.fill"
-        case .unadjustedSalary: return "banknote.fill"
-        case .softwareJobs: return "laptopcomputer"
-        case .homePrice: return "house.fill"
-        }
-    }
-    
-
-    func color(for value: Double) -> Color {
-        let config = colorConfig
-        
-        // Normalize between 0 and 1 using predefined ranges
-        let normalized = (value - config.minValue) / (config.maxValue - config.minValue)
-        let clamped = max(0, min(1, normalized))  // Ensure value is between 0 and 1
-        
-        // Interpolate between the two colors using tuples
-        let r = config.lowColor.0 + (config.highColor.0 - config.lowColor.0) * clamped
-        let g = config.lowColor.1 + (config.highColor.1 - config.lowColor.1) * clamped
-        let b = config.lowColor.2 + (config.highColor.2 - config.lowColor.2) * clamped
-        
-        return Color(red: r, green: g, blue: b)
-    }
-    
-    func getValue(from city: City) -> Double {
-        switch self {
-        case .adjustedSalary: return city.meanSalaryAdjusted
-        case .unadjustedSalary: return city.meanSalaryUnadjusted
-        case .softwareJobs: return Double(city.quantitySoftwareJobs)
-        case .homePrice: return Double(city.medianHomePrice)
-        }
-    }
-    
-    func formatValue(_ value: Double) -> String {
-        switch self {
-        case .adjustedSalary, .unadjustedSalary, .homePrice:
-            return "$\(Int(value).formatted())"
-        case .softwareJobs:
-            return "\(Int(value).formatted())"
-        }
-    }
-}
-
 struct MapContainer: View {
     @EnvironmentObject var mainViewModel: MainViewModel
-    @State private var selectedFilter: FilterType = .unadjustedSalary
-    @State private var numberOfCities: Int = 30
     @State private var showFilters = false
-
-    
-    var filteredCities: [City] {
-        switch selectedFilter {
-        case .adjustedSalary:
-            return mainViewModel.getTopCitiesByAdjustedSalary(num: numberOfCities)
-        case .unadjustedSalary:
-            return mainViewModel.getTopCitiesByUnadjustedSalary(num: numberOfCities)
-        case .softwareJobs:
-            return mainViewModel.getTopCitiesBySoftwareJobs(num: numberOfCities)
-        case .homePrice:
-            return mainViewModel.getTopCitiesByMedianHomePrice(num: numberOfCities)
-        }
-    }
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            MapView(cities: filteredCities, filterType: selectedFilter)
+            MapView(cities: mainViewModel.filteredCities, filterType: mainViewModel.selectedFilter)
             
             VStack(alignment: .leading, spacing: 10) {
                 Button(action: { showFilters.toggle() }) {
@@ -100,14 +23,11 @@ struct MapContainer: View {
                         Text("Filter By:")
                             .font(.headline)
                         
-                        ForEach([FilterType.adjustedSalary,
-                                .unadjustedSalary,
-                                .softwareJobs,
-                                .homePrice]) { filter in
-                            Button(action: { selectedFilter = filter }) {
+                        ForEach(mainViewModel.getFilterTypes()) { filter in
+                            Button(action: { mainViewModel.selectedFilter = filter }) {
                                 HStack {
                                     Text(filter.title)
-                                    if selectedFilter == filter {
+                                    if mainViewModel.selectedFilter == filter {
                                         Image(systemName: "checkmark")
                                     }
                                 }
@@ -116,11 +36,11 @@ struct MapContainer: View {
                         
                         Divider()
                         
-                        Text("Number of Cities: \(numberOfCities)")
+                        Text("Number of Cities: \(mainViewModel.numberOfCities)")
                             .font(.headline)
                         Slider(value: .init(
-                            get: { Double(numberOfCities) },
-                            set: { numberOfCities = Int($0) }
+                            get: { Double(mainViewModel.numberOfCities) },
+                            set: { mainViewModel.numberOfCities = Int($0) }
                         ), in: 5...50, step: 5)
                     }
                     .padding()
@@ -134,6 +54,7 @@ struct MapContainer: View {
 }
 
 struct CustomAnnotation: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
     let city: City
     let filterType: FilterType
     @State private var isHovered = false
@@ -142,7 +63,7 @@ struct CustomAnnotation: View {
     var body: some View {
         VStack {
             Image(systemName: filterType.icon)
-                .foregroundColor(filterType.color(for: filterType.getValue(from: city)))
+                .foregroundColor(mainViewModel.colorViewModel.getColor(for: filterType, city: city))
                 .font(.title)
                 .onHover { hovering in
                     withAnimation {
@@ -157,7 +78,7 @@ struct CustomAnnotation: View {
                 VStack(spacing: 2) {
                     Text(city.name)
                         .font(.caption)
-                    Text(filterType.formatValue(filterType.getValue(from: city)))
+                    Text(mainViewModel.getFormattedValue(for: filterType, from: city))
                         .font(.caption2)
                 }
                 .padding(4)

@@ -12,6 +12,7 @@
 		352B35E02D0A1FE300885497 /* SoftwareDeveloperIncomeExpensesperUSACity.csv in Resources */ = {isa = PBXBuildFile; fileRef = 352B35DD2D0A1FE300885497 /* SoftwareDeveloperIncomeExpensesperUSACity.csv */; };
 		3539CE5D2D0CB60B00B2C0C0 /* ColorsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3539CE5C2D0CB60B00B2C0C0 /* ColorsModel.swift */; };
 		3539CE5F2D0CB72700B2C0C0 /* FilterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3539CE5E2D0CB72700B2C0C0 /* FilterType.swift */; };
+		3539CE612D0CBF4D00B2C0C0 /* ColorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3539CE602D0CBF4D00B2C0C0 /* ColorViewModel.swift */; };
 		357C20012CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357C20002CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift */; };
 		357C20052CFF804000DDEDA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 357C20042CFF804000DDEDA8 /* Assets.xcassets */; };
 		357C20082CFF804000DDEDA8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 357C20072CFF804000DDEDA8 /* Preview Assets.xcassets */; };
@@ -33,6 +34,7 @@
 		352B35DD2D0A1FE300885497 /* SoftwareDeveloperIncomeExpensesperUSACity.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SoftwareDeveloperIncomeExpensesperUSACity.csv; sourceTree = "<group>"; };
 		3539CE5C2D0CB60B00B2C0C0 /* ColorsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsModel.swift; sourceTree = "<group>"; };
 		3539CE5E2D0CB72700B2C0C0 /* FilterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterType.swift; sourceTree = "<group>"; };
+		3539CE602D0CBF4D00B2C0C0 /* ColorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewModel.swift; sourceTree = "<group>"; };
 		357C1FFD2CFF803E00DDEDA8 /* SoftwareJobInsights.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoftwareJobInsights.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		357C20002CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareJobInsightsApp.swift; sourceTree = "<group>"; };
 		357C20042CFF804000DDEDA8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			children = (
 				357C20182CFF84AE00DDEDA8 /* MainViewModel.swift */,
 				358F6FCC2D025DCC001EE8F5 /* CoalescedViewModel.swift */,
+				3539CE602D0CBF4D00B2C0C0 /* ColorViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 			files = (
 				358F6FCB2D0258B9001EE8F5 /* LocationsModel.swift in Sources */,
 				358F6FC32D0251FF001EE8F5 /* ListView.swift in Sources */,
+				3539CE612D0CBF4D00B2C0C0 /* ColorViewModel.swift in Sources */,
 				3539CE5F2D0CB72700B2C0C0 /* FilterType.swift in Sources */,
 				358F6FC12D0251F2001EE8F5 /* MapView.swift in Sources */,
 				357C20012CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift in Sources */,
