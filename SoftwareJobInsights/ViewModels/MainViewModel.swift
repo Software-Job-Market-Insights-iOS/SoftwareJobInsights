@@ -16,6 +16,7 @@ class MainViewModel: ObservableObject {
     @Published var numOfCitiesCity: Int = 30
     
     @Published var selectedCompanyFilter: CompanyFilterType = .averageTotalComp
+    @Published var companySearchQuery = ""
     @Published var selectedCompany = "Apple"
     @Published var numOfCitiesCompany: Int = 15
     
@@ -99,5 +100,15 @@ class MainViewModel: ObservableObject {
     
     func toggleMode() {
         isCompanyMode.toggle()
+    }
+    
+    var filteredCompanyNames: [String] {
+        let companyNames = Array(mainModel.companies.companies.keys)
+        if companySearchQuery.isEmpty {
+            return companyNames
+        }
+        return companyNames.filter { name in
+            name.localizedCaseInsensitiveContains(companySearchQuery)
+        }
     }
 }

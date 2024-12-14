@@ -9,7 +9,6 @@ struct MapContainer: View {
         ZStack(alignment: .topLeading) {
             MapView(currentLocations: mainViewModel.getCurrentLocations(), filterType: mainViewModel.currentFilter)
             
-            
             VStack(alignment: .leading, spacing: 10) {
                 Button(action: { showFilters.toggle() }) {
                     Label(showFilters ? "Hide Filters" : "Show Filters",
@@ -37,7 +36,35 @@ struct MapContainer: View {
                         
                         Divider()
                         
-                        if !mainViewModel.isCompanyMode {
+                        if mainViewModel.isCompanyMode {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Search Companies:")
+                                    .font(.headline)
+                                
+                                TextField("Enter company name...", text: $mainViewModel.companySearchQuery)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .autocorrectionDisabled()
+                                
+                                ScrollView {
+                                    LazyVStack(alignment: .leading) {
+                                        ForEach(mainViewModel.filteredCompanyNames, id: \.self) { companyName in
+                                            Button(action: { mainViewModel.selectedCompany = companyName }) {
+                                                HStack {
+                                                    Text(companyName)
+                                                    Spacer()
+                                                    if mainViewModel.selectedCompany == companyName {
+                                                        Image(systemName: "checkmark")
+                                                    }
+                                                }
+                                                .padding(.vertical, 4)
+                                            }
+                                        }
+                                    }
+                                }
+                                .frame(maxHeight: 200)
+                            }
+                        }
+                        else {
                             Text("Number of Cities: \(mainViewModel.numOfCitiesCity)")
                                 .font(.headline)
                             Slider(value: .init(
@@ -59,7 +86,7 @@ struct MapContainer: View {
             
             VStack {
                 Button(action: { mainViewModel.toggleMode() }) {
-                    Label(mainViewModel.isCompanyMode ? "Company Mode" : "City Mode",
+                    Label(mainViewModel.isCompanyMode ? mainViewModel.selectedCompany : "City Mode",
                           systemImage: mainViewModel.isCompanyMode ? "building.2" : "map")
                         .padding()
                         .background(.ultraThinMaterial)
