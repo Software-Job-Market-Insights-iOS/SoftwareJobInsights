@@ -10,65 +10,91 @@ import Foundation
 class MainViewModel: ObservableObject {
     let mainModel: MainModel
     let cities: [City]
-    let colorViewModel: ColorViewModel
-    
-    @Published var selectedFilter: FilterType = .unadjustedSalary
-    @Published var numberOfCities: Int = 30
-    
+        
     @Published var isCompanyMode = false
+    @Published var selectedCityFilter: CityFilterType = .adjustedSalary
+    @Published var numOfCitiesCity: Int = 30
+    
+    @Published var selectedCompanyFilter: CompanyFilterType = .averageTotalComp
     @Published var selectedCompany = "Apple"
+    @Published var numOfCitiesCompany: Int = 15
     
     init() {
         self.mainModel = MainModel()
         self.cities = Self.initAllCities(mainModel: mainModel)
-        self.colorViewModel = ColorViewModel(cities: self.cities)
+        initializeSortedArrays()
     }
     
-    func getCurrentLocations(num: Int) -> [MapLocation] {
+    lazy var colorViewModel: ColorViewModel = {
+        ColorViewModel(
+            cities: self.cities,
+            companies: Array(self.mainModel.companies.companies.values)
+        )
+    }()
+    
+    private var sortedCitiesByAdjustedSalary: [City] = []
+    private var sortedCitiesByUnadjustedSalary: [City] = []
+    private var sortedCitiesBySoftwareJobs: [City] = []
+    private var sortedCitiesByHomePrice: [City] = []
+    private var sortedCompanyCities: [CompanyCity] = []
+    
+    private func initializeSortedArrays() {
+        sortedCitiesByAdjustedSalary = cities.sorted { $0.meanSalaryAdjusted > $1.meanSalaryAdjusted }
+        sortedCitiesByUnadjustedSalary = cities.sorted { $0.meanSalaryUnadjusted > $1.meanSalaryUnadjusted }
+        sortedCitiesBySoftwareJobs = cities.sorted { $0.quantitySoftwareJobs > $1.quantitySoftwareJobs }
+        sortedCitiesByHomePrice = cities.sorted { $0.medianHomePrice > $1.medianHomePrice }
+    }
+    
+    func getCurrentLocations() -> [MapLocation] {
         if isCompanyMode {
-            return getTopCompanyCitiesByTotalYearlyComp(num: num)
+            return getTopCompanyCitiesByTotalYearlyComp(num: numOfCitiesCompany)
                 .map { MapLocation.companyCity($0) }
         } else {
-            switch selectedFilter {
+            let sortedCities: [City]
+            switch selectedCityFilter {
             case .adjustedSalary:
-                return getTopCitiesByAdjustedSalary(num: num)
-                    .map { MapLocation.city($0) }
+                sortedCities = sortedCitiesByAdjustedSalary
             case .unadjustedSalary:
-                return getTopCitiesByUnadjustedSalary(num: num)
-                    .map { MapLocation.city($0) }
+                sortedCities = sortedCitiesByUnadjustedSalary
             case .softwareJobs:
-                return getTopCitiesBySoftwareJobs(num: num)
-                    .map { MapLocation.city($0) }
+                sortedCities = sortedCitiesBySoftwareJobs
             case .homePrice:
-                return getTopCitiesByMedianHomePrice(num: num)
-                    .map { MapLocation.city($0) }
+                sortedCities = sortedCitiesByHomePrice
             }
+            return sortedCities
+                .prefix(numOfCitiesCity)
+                .map { MapLocation.city($0) }
         }
     }
-    
-    func getFilterTypes() -> [FilterType] {
-        [
-            .adjustedSalary,
-            .unadjustedSalary,
-            .softwareJobs,
-            .homePrice
-        ]
-    }
-    
-    func getFormattedValue(for filterType: FilterType, from city: City) -> String {
-       switch filterType {
-       case .adjustedSalary, .unadjustedSalary, .homePrice:
-           let value = switch filterType {
-           case .adjustedSalary: city.meanSalaryAdjusted
-           case .unadjustedSalary: city.meanSalaryUnadjusted
-           case .homePrice: Double(city.medianHomePrice)
-           default: 0.0 // This won't be reached but is needed for exhaustiveness
-           }
-           return "$\(Int(value).formatted())"
-           
-       case .softwareJobs:
-           return city.quantitySoftwareJobs.formatted()
-       }
+
+    func getFormattedValue(for filterType: FilterType, from mapLocation: MapLocation) -> String {
+        switch mapLocation {
+        case .city(let city):
+            if case let .city(cityFilter) = filterType {
+                switch cityFilter {
+                case .adjustedSalary:
+                    return "$\(Int(city.meanSalaryAdjusted).formatted())"
+                case .unadjustedSalary:
+                    return "$\(Int(city.meanSalaryUnadjusted).formatted())"
+                case .homePrice:
+                    return "$\(Int(city.medianHomePrice).formatted())"
+                case .softwareJobs:
+                    return city.quantitySoftwareJobs.formatted()
+                }
+            }
+            return "0"
+            
+        case .companyCity(let companyCity):
+            if case let .company(companyFilter) = filterType {
+                switch companyFilter {
+                case .averageTotalComp:
+                    return "$\(Int(companyCity.averageTotalYearlyComp).formatted())"
+                case .numJobs:
+                    return companyCity.numOfJobs.formatted()
+                }
+            }
+            return "0"
+        }
     }
     
     func toggleMode() {

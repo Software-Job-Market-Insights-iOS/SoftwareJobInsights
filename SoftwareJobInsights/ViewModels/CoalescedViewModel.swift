@@ -101,30 +101,34 @@ extension MainViewModel {
     }
     
     func getTopCitiesByAdjustedSalary(num: Int) -> [City] {
+        let safeNum = min(num, cities.count)
         return cities
             .sorted { $0.meanSalaryAdjusted > $1.meanSalaryAdjusted }
-            .prefix(num)
+            .prefix(safeNum)
             .map { $0 }
     }
     
     func getTopCitiesByUnadjustedSalary(num: Int) -> [City] {
+        let safeNum = min(num, cities.count)
         return cities
             .sorted { $0.meanSalaryUnadjusted > $1.meanSalaryUnadjusted }
-            .prefix(num)
+            .prefix(safeNum)
             .map { $0 }
     }
     
     func getTopCitiesBySoftwareJobs(num: Int) -> [City] {
+        let safeNum = min(num, cities.count)
         return cities
             .sorted { $0.quantitySoftwareJobs > $1.quantitySoftwareJobs }
-            .prefix(num)
+            .prefix(safeNum)
             .map { $0 }
     }
     
     func getTopCitiesByMedianHomePrice(num: Int) -> [City] {
+        let safeNum = min(num, cities.count)
         return cities
             .sorted { $0.medianHomePrice > $1.medianHomePrice }
-            .prefix(num)
+            .prefix(safeNum)
             .map { $0 }
     }
     
@@ -139,8 +143,11 @@ extension MainViewModel {
         
         var companyCities: [CompanyCity] = []
         for citySummary in citySummaries {
-            let loc = mainModel.locations.locations[citySummary.city]!
-            
+            guard let loc = mainModel.locations.locations[citySummary.city] else {
+                continue // If we don't have the loc, it is likely an international city
+                // TODO: maybe handle this better later, could filter out international cities
+                // when loading originally
+            }
             let companyCity = CompanyCity(id: loc.fips, name: citySummary.city,averageTotalYearlyComp: Double(citySummary.totalTotalYearlyComp / citySummary.numOfJobs), numOfJobs: citySummary.numOfJobs, latitude: loc.latitude, longitude: loc.longitude)
             
             companyCities.append(companyCity)

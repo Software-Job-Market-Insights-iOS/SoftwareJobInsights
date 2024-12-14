@@ -7,7 +7,7 @@ struct MapContainer: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            MapView(cities: mainViewModel.filteredCities, filterType: mainViewModel.selectedFilter)
+            MapView(currentLocations: mainViewModel.getCurrentLocations(), filterType: mainViewModel.currentFilter)
             
             
             VStack(alignment: .leading, spacing: 10) {
@@ -25,10 +25,10 @@ struct MapContainer: View {
                             .font(.headline)
                         
                         ForEach(mainViewModel.getFilterTypes()) { filter in
-                            Button(action: { mainViewModel.selectedFilter = filter }) {
+                            Button(action: { mainViewModel.setFilter(filter) }) {
                                 HStack {
                                     Text(filter.title)
-                                    if mainViewModel.selectedFilter == filter {
+                                    if mainViewModel.isCurrentFilter(filter) {
                                         Image(systemName: "checkmark")
                                     }
                                 }
@@ -37,12 +37,18 @@ struct MapContainer: View {
                         
                         Divider()
                         
-                        Text("Number of Cities: \(mainViewModel.numberOfCities)")
-                            .font(.headline)
-                        Slider(value: .init(
-                            get: { Double(mainViewModel.numberOfCities) },
-                            set: { mainViewModel.numberOfCities = Int($0) }
-                        ), in: 5...50, step: 5)
+                        if !mainViewModel.isCompanyMode {
+                            Text("Number of Cities: \(mainViewModel.numOfCitiesCity)")
+                                .font(.headline)
+                            Slider(value: .init(
+                                get: { Double(mainViewModel.numOfCitiesCity) },
+                                set: { newValue in
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        mainViewModel.numOfCitiesCity = Int(newValue)
+                                    }
+                                }
+                            ), in: 5...30, step: 5)
+                        }
                     }
                     .padding()
                     .background(.ultraThinMaterial)
@@ -69,7 +75,7 @@ struct MapContainer: View {
 
 struct CustomAnnotation: View {
     @EnvironmentObject var mainViewModel: MainViewModel
-    let city: City
+    let mapLocation: MapLocation
     let filterType: FilterType
     @State private var isHovered = false
     @State private var showDetails = false
@@ -77,7 +83,7 @@ struct CustomAnnotation: View {
     var body: some View {
         VStack {
             Image(systemName: filterType.icon)
-                .foregroundColor(mainViewModel.colorViewModel.getColor(for: filterType, city: city))
+                .foregroundColor(mainViewModel.colorViewModel.getColor(for: filterType, mapLoc: mapLocation))
                 .font(.title)
                 .onHover { hovering in
                     withAnimation {
@@ -87,22 +93,10 @@ struct CustomAnnotation: View {
                 .onTapGesture {
                     showDetails.toggle()
                 }
-            
-            if isHovered {
-                VStack(spacing: 2) {
-                    Text(city.name)
-                        .font(.caption)
-                    Text(mainViewModel.getFormattedValue(for: filterType, from: city))
-                        .font(.caption2)
-                }
-                .padding(4)
-                .background(.white.opacity(0.9))
-                .cornerRadius(4)
-            }
         }
-        .sheet(isPresented: $showDetails) {
-            CityDetailView(city: city)
-        }
+//        .sheet(isPresented: $showDetails) {
+//            CityDetailView(city: city)
+//        }
     }
 }
 
@@ -147,7 +141,7 @@ struct CityDetailView: View {
 }
 
 struct MapView: View {
-    let cities: [City]
+    let currentLocations: [MapLocation]
     let filterType: FilterType
     
     @State private var position: MapCameraPosition = .region(MKCoordinateRegion(
@@ -157,12 +151,12 @@ struct MapView: View {
     
     var body: some View {
         Map(position: $position) {
-            ForEach(cities) { city in
-                Annotation(city.name, coordinate: CLLocationCoordinate2D(
-                    latitude: Double(city.latitude),
-                    longitude: Double(city.longitude)
+            ForEach(currentLocations) { curLoc in
+                Annotation(curLoc.name, coordinate: CLLocationCoordinate2D(
+                    latitude: CLLocationDegrees(curLoc.coordinate.latitude),
+                    longitude: CLLocationDegrees(curLoc.coordinate.longitude)
                 )) {
-                    CustomAnnotation(city: city, filterType: filterType)
+                    CustomAnnotation(mapLocation: curLoc, filterType: filterType)
                 }
             }
         }

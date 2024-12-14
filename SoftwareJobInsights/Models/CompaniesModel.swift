@@ -21,6 +21,11 @@ struct CompanyCitySummary {
 
 struct Company {
     let company: String
+    
+    // min and max total yearly comps are useful for normalizing the colors
+    var minTotalYearlyComp: Int
+    var maxTotalYearlyComp: Int
+    
     var cityJobs: [String: [LevelsElement]]
     var citySummaries: [String: CompanyCitySummary]
 }
@@ -61,7 +66,7 @@ class CompaniesModel {
             )
             
             if companies[company] == nil {
-                companies[company] = Company(company: company, cityJobs: [:], citySummaries: [:])
+                companies[company] = Company(company: company, minTotalYearlyComp: totalYearlyComp, maxTotalYearlyComp: totalYearlyComp, cityJobs: [:], citySummaries: [:])
             }
             
             if companies[company]!.cityJobs[city] == nil {
@@ -74,6 +79,13 @@ class CompaniesModel {
             companies[company]!.cityJobs[city]!.append(job)
             companies[company]!.citySummaries[city]!.totalTotalYearlyComp += totalYearlyComp
             companies[company]!.citySummaries[city]!.numOfJobs += 1
+            
+            if companies[company]!.minTotalYearlyComp > totalYearlyComp {
+                companies[company]!.minTotalYearlyComp = totalYearlyComp
+            }
+            if companies[company]!.maxTotalYearlyComp < totalYearlyComp {
+                companies[company]!.maxTotalYearlyComp = totalYearlyComp
+            }
         }
         
         return companies
