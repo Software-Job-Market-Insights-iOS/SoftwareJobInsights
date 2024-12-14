@@ -117,8 +117,6 @@ class ColorViewModel: ObservableObject {
     }
     
     func getColor(for filterType: FilterType, mapLoc: MapLocation) -> Color {
-        print(mapLoc)
-        
         switch mapLoc {
         case .city(let city):
             if case .city(let cityFilter) = filterType {

@@ -36,7 +36,7 @@ class CompaniesModel {
     private static func loadCompaniesFromCSV() -> [String: Company] {
         var companies: [String: Company] = [:]
         
-        guard let url = Bundle.main.url(forResource: "Levels_Fyi_Salary_Data", withExtension: "csv"),
+        guard let url = Bundle.main.url(forResource: "Levels_Fyi_Salary_Data-Cleaned", withExtension: "csv"),
               let content = try? String(contentsOf: url) else {
             print("Failed to load Levels CSV")
             return [:]
@@ -52,8 +52,8 @@ class CompaniesModel {
             if columns.count != headerRow.count {
                 continue
             }
-                        
-            let company = columns[1]
+                                    
+            let company = columns[1].capitalized
             let level = columns[2]
             let title = columns[3]
             let totalYearlyComp = Int(columns[4])!
@@ -64,7 +64,7 @@ class CompaniesModel {
                 totalYearlyComp: totalYearlyComp,
                 title: title
             )
-            
+                        
             if companies[company] == nil {
                 companies[company] = Company(company: company, minTotalYearlyComp: totalYearlyComp, maxTotalYearlyComp: totalYearlyComp, cityJobs: [:], citySummaries: [:])
             }
