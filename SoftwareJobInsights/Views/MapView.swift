@@ -112,18 +112,46 @@ struct CustomAnnotation: View {
             Image(systemName: filterType.icon)
                 .foregroundColor(mainViewModel.colorViewModel.getColor(for: filterType, mapLoc: mapLocation))
                 .font(.title)
-                .onHover { hovering in
-                    withAnimation {
-                        isHovered = hovering
-                    }
-                }
                 .onTapGesture {
                     showDetails.toggle()
                 }
         }
-//        .sheet(isPresented: $showDetails) {
-//            CityDetailView(city: city)
-//        }
+        .sheet(isPresented: $showDetails) {
+            switch mapLocation {
+            case .city(let city):
+                CityDetailView(city: city)
+            case .companyCity(let companyCity):
+                CompanyCityDetailView(companyCity: companyCity)
+            }
+        }
+    }
+}
+
+struct CompanyCityDetailView: View {
+    let companyCity: CompanyCity
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        NavigationView {
+            List {
+                Section("Total Yearly Compensation") {
+                    LabeledContent("Average Total Comp", value: "$\(Int(companyCity.averageTotalYearlyComp).formatted())")
+                }
+                
+                Section("Job Market") {
+                    LabeledContent("Number of Datapoints", value: companyCity.numOfJobs.formatted())
+                }
+            }
+            .navigationTitle(companyCity.name)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }
 
