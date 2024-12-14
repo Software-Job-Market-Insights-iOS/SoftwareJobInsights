@@ -10,7 +10,10 @@ import Foundation
 class MainViewModel: ObservableObject {
     let mainModel: MainModel
     let cities: [City]
-        
+    let idxOfCities: [String: Int]
+    
+    @Published var selectedLocation: MapLocation?
+    
     @Published var isCompanyMode = false
     @Published var selectedCityFilter: CityFilterType = .adjustedSalary
     @Published var numOfCitiesCity: Int = 30
@@ -22,7 +25,7 @@ class MainViewModel: ObservableObject {
     
     init() {
         self.mainModel = MainModel()
-        self.cities = Self.initAllCities(mainModel: mainModel)
+        (self.cities, self.idxOfCities) = Self.initAllCities(mainModel: mainModel)
         initializeSortedArrays()
     }
     

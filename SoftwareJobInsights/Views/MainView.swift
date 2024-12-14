@@ -8,25 +8,34 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
     var body: some View {
-        TabView {
-            MapContainer()
-                .tabItem {
-                    Image(systemName: "map")
-                    Text("Map")
+        NavigationStack {
+            TabView {
+                MapContainer()
+                    .tabItem {
+                        Label("Map", systemImage: "map")
+                    }
+                
+                ListContainer()
+                    .tabItem {
+                        Label("List", systemImage: "list.bullet")
+                    }
+                
+                ComparisonView()
+                    .tabItem {
+                        Image(systemName: "chart.bar.xaxis")
+                        Text("Compare")
+                    }
+            }
+            .navigationDestination(item: $mainViewModel.selectedLocation) { destination in
+                switch destination {
+                case .city(let city):
+                    CityNavigationView(city: city)
+                case .companyCity(let companyCity):
+                    CompanyCityNavigationView(companyCity: companyCity)
                 }
-            
-            ListView()
-                .tabItem {
-                    Image(systemName: "list.bullet")
-                    Text("List")
-                }
-            
-            ComparisonView()
-                .tabItem {
-                    Image(systemName: "chart.bar.xaxis")
-                    Text("Compare")
-                }
+            }
         }
     }
 }

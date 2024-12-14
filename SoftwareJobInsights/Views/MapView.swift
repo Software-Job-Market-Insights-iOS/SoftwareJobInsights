@@ -108,92 +108,21 @@ struct CustomAnnotation: View {
     @State private var showDetails = false
     
     var body: some View {
-        VStack {
-            Image(systemName: filterType.icon)
-                .foregroundColor(mainViewModel.colorViewModel.getColor(for: filterType, mapLoc: mapLocation))
-                .font(.title)
-                .onTapGesture {
-                    showDetails.toggle()
+        Image(systemName: filterType.icon)
+            .foregroundColor(mainViewModel.colorViewModel.getColor(for: filterType, mapLoc: mapLocation))
+            .font(.title)
+            .onTapGesture {
+                switch mapLocation {
+                case .city(let city):
+                    print("setting selected location")
+                    mainViewModel.selectedLocation = .city(city)
+                case .companyCity(let companyCity):
+                    mainViewModel.selectedLocation = .companyCity(companyCity)
                 }
-        }
-        .sheet(isPresented: $showDetails) {
-            switch mapLocation {
-            case .city(let city):
-                CityDetailView(city: city)
-            case .companyCity(let companyCity):
-                CompanyCityDetailView(companyCity: companyCity)
             }
-        }
     }
 }
 
-struct CompanyCityDetailView: View {
-    let companyCity: CompanyCity
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        NavigationView {
-            List {
-                Section("Total Yearly Compensation") {
-                    LabeledContent("Average Total Comp", value: "$\(Int(companyCity.averageTotalYearlyComp).formatted())")
-                }
-                
-                Section("Job Market") {
-                    LabeledContent("Number of Datapoints", value: companyCity.numOfJobs.formatted())
-                }
-            }
-            .navigationTitle(companyCity.name)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium])
-    }
-}
-
-struct CityDetailView: View {
-    let city: City
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        NavigationView {
-            List {
-                Section("Salary Information") {
-                    LabeledContent("Adjusted Salary", value: "$\(Int(city.meanSalaryAdjusted).formatted())")
-                    LabeledContent("Unadjusted Salary", value: "$\(Int(city.meanSalaryUnadjusted).formatted())")
-                }
-                
-                Section("Housing") {
-                    LabeledContent("Median Home Price", value: "$\(city.medianHomePrice.formatted())")
-                    LabeledContent("Average Rent", value: "$\(Int(city.rentAverage).formatted())")
-                }
-                
-                Section("Jobs & Economy") {
-                    LabeledContent("Software Jobs", value: city.quantitySoftwareJobs.formatted())
-                    LabeledContent("Cost of Living Index", value: String(format: "%.1f", city.costOfLivingAverage))
-                }
-                
-                Section("Demographics") {
-                    LabeledContent("Population", value: city.population.formatted())
-                    LabeledContent("Density", value: "\(city.density.formatted())/sq mi")
-                }
-            }
-            .navigationTitle(city.name)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium])
-    }
-}
 
 struct MapView: View {
     let currentLocations: [MapLocation]

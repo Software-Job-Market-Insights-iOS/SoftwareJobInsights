@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MapLocation: Identifiable {
+enum MapLocation: Identifiable, Hashable {
     case city(City)
     case companyCity(CompanyCity)
     
@@ -32,6 +32,30 @@ enum MapLocation: Identifiable {
             return (city.latitude, city.longitude)
         case .companyCity(let companyCity):
             return (companyCity.latitude, companyCity.longitude)
+        }
+    }
+    
+    // Implement Hashable
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .city(let city):
+            hasher.combine("city")
+            hasher.combine(city.id)
+        case .companyCity(let companyCity):
+            hasher.combine("companyCity")
+            hasher.combine(companyCity.id)
+        }
+    }
+    
+    // Implement equality for Hashable
+    static func == (lhs: MapLocation, rhs: MapLocation) -> Bool {
+        switch (lhs, rhs) {
+        case (.city(let lhsCity), .city(let rhsCity)):
+            return lhsCity.id == rhsCity.id
+        case (.companyCity(let lhsCompanyCity), .companyCity(let rhsCompanyCity)):
+            return lhsCompanyCity.id == rhsCompanyCity.id
+        default:
+            return false
         }
     }
 }
@@ -70,11 +94,15 @@ extension MainViewModel {
     // Note:
     // Both CitiesModel and CompaniesModel use String of format: Baltimore, MD for dictionary hashing
         
-    static func initAllCities(mainModel: MainModel) -> [City] {
+    static func initAllCities(mainModel: MainModel) -> ([City], [String: Int]) {
         var cities: [City] = []
+        var idxOfCities: [String: Int] = [:]
         
-        for (cityName, cityBackend) in Array(mainModel.cities.cities) {
-            let loc = mainModel.locations.locations[cityName]!
+        for (idx, (cityName, cityBackend)) in Array(mainModel.cities.cities).enumerated() {
+            guard let loc = mainModel.locations.locations[cityName] else {
+                print("Warning: No location found for city \(cityName)")
+                continue
+            }
             
             let city = City(
                 id: loc.fips,
@@ -92,12 +120,13 @@ extension MainViewModel {
                 longitude: loc.longitude,
                 population: loc.population,
                 density: loc.density
-                )
-                
+            )
+            
             cities.append(city)
+            idxOfCities[cityName] = idx
         }
         
-        return cities
+        return (cities, idxOfCities)
     }
     
     func getTopCitiesByAdjustedSalary(num: Int) -> [City] {
@@ -154,5 +183,9 @@ extension MainViewModel {
         }
         
         return companyCities
+    }
+    
+    func getCityByName(name: String) -> City {
+        cities[idxOfCities[name]!]
     }
 }

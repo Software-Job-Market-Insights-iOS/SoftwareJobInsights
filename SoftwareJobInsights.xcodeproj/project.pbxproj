@@ -27,6 +27,8 @@
 		35B267482CFF92FE00E76C0F /* CitiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35B267472CFF92FE00E76C0F /* CitiesModel.swift */; };
 		35DE62E72D0E0AA100DC4AAC /* FilterTypesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DE62E62D0E0AA100DC4AAC /* FilterTypesViewModel.swift */; };
 		35F06EBC2D0E329600617051 /* Levels_Fyi_Salary_Data-Cleaned.csv in Resources */ = {isa = PBXBuildFile; fileRef = 35F06EBB2D0E329600617051 /* Levels_Fyi_Salary_Data-Cleaned.csv */; };
+		35F06EBE2D0E3C3600617051 /* CityNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F06EBD2D0E3C3600617051 /* CityNavigationView.swift */; };
+		35F06EC02D0E3C6500617051 /* CompanyCityNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F06EBF2D0E3C6500617051 /* CompanyCityNavigationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +53,8 @@
 		35B267472CFF92FE00E76C0F /* CitiesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesModel.swift; sourceTree = "<group>"; };
 		35DE62E62D0E0AA100DC4AAC /* FilterTypesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTypesViewModel.swift; sourceTree = "<group>"; };
 		35F06EBB2D0E329600617051 /* Levels_Fyi_Salary_Data-Cleaned.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Levels_Fyi_Salary_Data-Cleaned.csv"; sourceTree = "<group>"; };
+		35F06EBD2D0E3C3600617051 /* CityNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityNavigationView.swift; sourceTree = "<group>"; };
+		35F06EBF2D0E3C6500617051 /* CompanyCityNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyCityNavigationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +136,8 @@
 				358F6FC02D0251F2001EE8F5 /* MapView.swift */,
 				358F6FC22D0251FF001EE8F5 /* ListView.swift */,
 				358F6FC42D02520B001EE8F5 /* ComparisonView.swift */,
+				35F06EBD2D0E3C3600617051 /* CityNavigationView.swift */,
+				35F06EBF2D0E3C6500617051 /* CompanyCityNavigationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -225,7 +231,9 @@
 				35DE62E72D0E0AA100DC4AAC /* FilterTypesViewModel.swift in Sources */,
 				3539CE612D0CBF4D00B2C0C0 /* ColorViewModel.swift in Sources */,
 				3539CE5F2D0CB72700B2C0C0 /* FilterTypes.swift in Sources */,
+				35F06EC02D0E3C6500617051 /* CompanyCityNavigationView.swift in Sources */,
 				358F6FC12D0251F2001EE8F5 /* MapView.swift in Sources */,
+				35F06EBE2D0E3C3600617051 /* CityNavigationView.swift in Sources */,
 				357C20012CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift in Sources */,
 				357C20172CFF832C00DDEDA8 /* MainModel.swift in Sources */,
 				358F6FCD2D025DCC001EE8F5 /* CoalescedViewModel.swift in Sources */,
