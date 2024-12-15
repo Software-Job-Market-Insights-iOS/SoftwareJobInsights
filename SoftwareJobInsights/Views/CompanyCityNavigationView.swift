@@ -16,12 +16,37 @@ struct CompanyCityNavigationView: View {
                 // Compensation Header
                 Section {
                     VStack(alignment: .center) {
-                        Text("$\(Int(companyCity.averageTotalYearlyComp).formatted())")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primary)
+                        HStack(alignment: .center, spacing: 20) {
+                            // City Average
+                            VStack {
+                                Text("City Average")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                
+                                Text("$\(Int(companyCity.averageTotalYearlyComp).formatted())")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.primary)
+                            }
+                            
+                            Divider()
+                                .frame(height: 40)
+                            
+                            // Nationwide Average
+                            VStack {
+                                Text("National Average")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                
+                                Text("$\(mainViewModel.getNationwideAvgCompForCompany(companyName: mainViewModel.selectedCompany).formatted())")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                        .padding(.vertical)
                         
-                        Text("Average Total Yearly Compensation")
+                        Text("Total Yearly Compensation")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         
@@ -29,14 +54,13 @@ struct CompanyCityNavigationView: View {
                             Text("For \(mainViewModel.selectedCompany)")
                                 .font(.headline)
                                 .foregroundColor(.secondary)
-                                .padding(.top)
+                                .padding(.top, 4)
                         }
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
                 }
                 .listRowBackground(Color.clear)
-                
                 // Compensation Breakdown
                 Section("Compensation Details") {
                     LabeledContent("Total Yearly Comp", value: "$\(Int(companyCity.averageTotalYearlyComp).formatted())")

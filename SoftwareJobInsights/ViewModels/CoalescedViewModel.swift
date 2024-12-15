@@ -188,4 +188,8 @@ extension MainViewModel {
     func getCityByName(name: String) -> City {
         cities[idxOfCities[name]!]
     }
+    
+    func getNationwideAvgCompForCompany(companyName: String) -> Int {
+        return mainModel.companies.companies[companyName]!.avgTotalCompAllLevels!
+    }
 }

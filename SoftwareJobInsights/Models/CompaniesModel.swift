@@ -26,6 +26,9 @@ struct Company {
     var minTotalYearlyComp: Int
     var maxTotalYearlyComp: Int
     
+    var avgTotalCompAllLevels: Int?
+    var avgTotalCompByLevel: [String: Int]?
+    
     var cityJobs: [String: [LevelsElement]]
     var citySummaries: [String: CompanyCitySummary]
 }
@@ -88,6 +91,42 @@ class CompaniesModel {
             }
         }
         
+        calcAggregateFields(companies: &companies)
         return companies
+    }
+    
+    private static func calcAggregateFields(companies: inout [String: Company]) {
+        for company in companies.keys {  // Iterate over keys instead of dictionary
+            // the first Int is for the totalTotalComp, the second Int is quantity of jobs
+            var totalTotalCompByLevelAndQuantity: [String: (Int, Int)] = [:]
+            var totalTotalComp: Int = 0
+            var totalTotalQuantity: Int = 0
+            
+            for city in companies[company]!.cityJobs {
+                for lvlsElement in city.value {
+                    let lvl = lvlsElement.level
+                    let totalYearlyComp = lvlsElement.totalYearlyComp
+                    
+                    if totalTotalCompByLevelAndQuantity[lvl] == nil {
+                        totalTotalCompByLevelAndQuantity[lvl] = (0, 0)
+                    }
+                    
+                    let curVal = totalTotalCompByLevelAndQuantity[lvl]!
+                    
+                    totalTotalCompByLevelAndQuantity[lvl]! = (curVal.0 + totalYearlyComp, curVal.1 + 1)
+                    
+                    totalTotalComp += totalYearlyComp  // Fixed: Add the actual comp, not curVal.0
+                    totalTotalQuantity += 1
+                }
+            }
+            
+            var avgTotalCompByLevel: [String: Int] = [:]
+            for (lvl, tots) in totalTotalCompByLevelAndQuantity {
+                avgTotalCompByLevel[lvl] = (tots.0 / tots.1)
+            }
+            
+            companies[company]!.avgTotalCompByLevel = avgTotalCompByLevel
+            companies[company]!.avgTotalCompAllLevels = totalTotalComp / totalTotalQuantity
+        }
     }
 }
