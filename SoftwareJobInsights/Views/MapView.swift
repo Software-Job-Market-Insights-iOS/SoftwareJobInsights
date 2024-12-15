@@ -24,7 +24,7 @@ struct MapContainer: View {
                             .font(.headline)
                         
                         ForEach(mainViewModel.getFilterTypes()) { filter in
-                            Button(action: { mainViewModel.setFilter(filter) }) {
+                            Button(action: { mainViewModel.currentFilter = filter }) {
                                 HStack {
                                     Text(filter.title)
                                     if mainViewModel.isCurrentFilter(filter) {

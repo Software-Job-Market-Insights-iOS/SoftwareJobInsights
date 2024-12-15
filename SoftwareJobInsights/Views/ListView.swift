@@ -1,148 +1,160 @@
 import SwiftUI
 
+struct ListItem: Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let value: String
+}
+
 struct ListContainer: View {
     @EnvironmentObject var mainViewModel: MainViewModel
-    @State private var showFilters = false
-    @State private var selectedCity: City?
-    @State private var selectedCompanyCity: CompanyCity?
+    @State private var isAggregateMode = false
+    
+    var topFiveCompanies: [String] {
+        Array(mainViewModel.filteredCompanyNames.prefix(5))
+    }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            // Filter Toggle Button
-            Button(action: { showFilters.toggle() }) {
-                Label(showFilters ? "Hide Filters" : "Show Filters",
-                      systemImage: showFilters ? "chevron.up" : "chevron.down")
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(10)
-            }
-            
-            // Mode Toggle Button
-            HStack {
-                Spacer()
-                Button(action: { mainViewModel.toggleMode() }) {
-                    Label(mainViewModel.isCompanyMode ? mainViewModel.selectedCompany : "City Mode",
-                          systemImage: mainViewModel.isCompanyMode ? "building.2" : "map")
-                        .padding()
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(10)
+        NavigationView {
+            VStack {
+                Picker("View Mode", selection: $mainViewModel.isCompanyMode) {
+                    Text("City").tag(false)
+                    Text("Company").tag(true)
                 }
-            }
-            
-            // Filters Section
-            if showFilters {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Filter By:")
-                        .font(.headline)
-                    
-                    // Filter Types
-                    ForEach(mainViewModel.getFilterTypes()) { filter in
-                        Button(action: { mainViewModel.setFilter(filter) }) {
-                            HStack {
-                                Text(filter.title)
-                                if mainViewModel.isCurrentFilter(filter) {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+                
+                if mainViewModel.isCompanyMode {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("Selected Company:")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            Text(mainViewModel.selectedCompany)
+                                .font(.subheadline)
+                                .foregroundColor(.blue)
                         }
-                    }
-                    
-                    Divider()
-                    
-                    // Company or City Specific Filters
-                    if mainViewModel.isCompanyMode {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Search Companies:")
-                                .font(.headline)
-                            
-                            TextField("Enter company name...", text: $mainViewModel.companySearchQuery)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.horizontal)
+                        
+                        // Search Field
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.gray)
+                            TextField("Search companies...", text: $mainViewModel.companySearchQuery)
                                 .autocorrectionDisabled()
-                            
-                            ScrollView {
-                                LazyVStack(alignment: .leading) {
-                                    ForEach(mainViewModel.filteredCompanyNames, id: \.self) { companyName in
-                                        Button(action: { mainViewModel.selectedCompany = companyName }) {
-                                            HStack {
-                                                Text(companyName)
-                                                Spacer()
-                                                if mainViewModel.selectedCompany == companyName {
-                                                    Image(systemName: "checkmark")
-                                                }
-                                            }
-                                            .padding(.vertical, 4)
+                        }
+                        .padding(10)
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(8)
+                        
+                        if !mainViewModel.companySearchQuery.isEmpty {
+                            VStack(spacing: 2) {
+                                ForEach(topFiveCompanies, id: \.self) { companyName in
+                                    Button(action: {
+                                        mainViewModel.selectedCompany = companyName
+                                        mainViewModel.companySearchQuery = ""
+                                    }) {
+                                        HStack {
+                                            Text(companyName)
+                                                .foregroundColor(.primary)
+                                            Spacer()
                                         }
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 10)
+                                        .background(Color.gray.opacity(0.05))
                                     }
                                 }
                             }
-                            .frame(maxHeight: 200)
+                            .background(Color.white)
+                            .cornerRadius(8)
                         }
-                    } else {
-                        Text("Number of Cities: \(mainViewModel.numOfCitiesCity)")
-                            .font(.headline)
-                        Slider(value: .init(
-                            get: { Double(mainViewModel.numOfCitiesCity) },
-                            set: { newValue in
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    mainViewModel.numOfCitiesCity = Int(newValue)
-                                }
-                            }
-                        ), in: 5...30, step: 5)
+                    }
+                    .padding(.horizontal)
+                }
+
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(mainViewModel.getFilterTypes(), id: \.self) { filter in
+                            FilterButton(
+                                filter: filter,
+                                isSelected: mainViewModel.isCurrentFilter(filter),
+                                action: { mainViewModel.currentFilter = filter }
+                            )
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                
+                ScrollView {
+                    LazyVStack(spacing: 8) {
+                        ForEach(mainViewModel.getCurrentLocations()) { mapLoc in
+                            ListItemRow(filter: mainViewModel.currentFilter, mapLoc: mapLoc)
+                        }
+                        .padding(.horizontal)
                     }
                 }
-                .padding()
-                .background(.ultraThinMaterial)
-                .cornerRadius(10)
             }
+            .navigationTitle("List")
+        }
+    }
+}
+
+struct ListItemRow: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
+    let filter: FilterType
+    let mapLoc: MapLocation
+    
+    var body: some View {
+        HStack {
+            Image(systemName: filter.icon)
+                .foregroundColor(mainViewModel.colorViewModel.getColor(for: filter, mapLoc: mapLoc))
+                .frame(width: 30)
             
-            // List of Locations
-            List {
-                ForEach(mainViewModel.getCurrentLocations()) { location in
-                    Button(action: {
-                        // Determine which detail view to show based on location type
-                        switch location {
-                        case .city(let city):
-                            selectedCity = city
-                        case .companyCity(let companyCity):
-                            selectedCompanyCity = companyCity
-                        }
-                    }) {
-                        HStack {
-                            // Color-coded icon based on filter type
-                            Image(systemName: mainViewModel.currentFilter.icon)
-                                .foregroundColor(mainViewModel.colorViewModel.getColor(for: mainViewModel.currentFilter, mapLoc: location))
-                            
-                            VStack(alignment: .leading) {
-                                Text(location.name)
-                                    .font(.headline)
-                                
-                                // Show different details based on location type
-                                switch location {
-                                case .city(let city):
-                                    Text("Avg Salary: $\(Int(city.meanSalaryAdjusted).formatted())")
-                                        .font(.subheadline)
-                                case .companyCity(let companyCity):
-                                    Text("Avg Total Comp: $\(Int(companyCity.averageTotalYearlyComp).formatted())")
-                                        .font(.subheadline)
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-            }
+            Text(mapLoc.name)
+                .font(.body)
+            
+            Spacer()
+            
+            Text(mainViewModel.getFormattedValue(for: filter, from: mapLoc))
+                .foregroundColor(.gray)
         }
         .padding()
-        .sheet(item: $selectedCity) { city in
-            CityNavigationView(city: city)
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(10)
+        .onTapGesture {
+            mainViewModel.selectedLocation = mapLoc
         }
-        .sheet(item: $selectedCompanyCity) { companyCity in
-            CompanyCityNavigationView(companyCity: companyCity)
+    }
+}
+
+struct FilterButton: View {
+    let filter: FilterType
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(filter.title)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(isSelected ? Color.blue : Color.gray.opacity(0.2))
+                .foregroundColor(isSelected ? .white : .primary)
+                .cornerRadius(8)
         }
+    }
+}
+
+struct DetailView: View {
+    let item: ListItem
+    
+    var body: some View {
+        VStack {
+            Text(item.title)
+            Text(item.value)
+        }
+        .navigationTitle("Details")
     }
 }
 

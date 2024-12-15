@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum FilterType: Identifiable, Equatable {
+enum FilterType: Identifiable, Equatable, Hashable {
     case city(CityFilterType)
     case company(CompanyFilterType)
     

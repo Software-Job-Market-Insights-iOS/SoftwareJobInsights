@@ -8,21 +8,23 @@
 import Foundation
 
 extension MainViewModel {
+    
     var currentFilter: FilterType {
-        isCompanyMode ? .company(selectedCompanyFilter) : .city(selectedCityFilter)
+        get {
+            isCompanyMode ? .company(selectedCompanyFilter) : .city(selectedCityFilter)
+        }
+        set {
+            switch newValue {
+            case .city(let cityFilter):
+                selectedCityFilter = cityFilter
+            case .company(let companyFilter):
+                selectedCompanyFilter = companyFilter
+            }
+        }
     }
     
     func getFilterTypes() -> [FilterType] {
         FilterType.getAllCases(isCompanyMode: isCompanyMode)
-    }
-    
-    func setFilter(_ filter: FilterType) {
-        switch filter {
-        case .city(let cityFilter):
-            selectedCityFilter = cityFilter
-        case .company(let companyFilter):
-            selectedCompanyFilter = companyFilter
-        }
     }
     
     func isCurrentFilter(_ filter: FilterType) -> Bool {
