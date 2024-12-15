@@ -23,6 +23,8 @@ class MainViewModel: ObservableObject {
     @Published var selectedCompany = "Apple"
     @Published var numOfCitiesCompany: Int = 15
     
+    @Published var selectedCompanyDetails: String?
+    
     // comparison queue arrays
     @Published var citiesQueue: [City] = []
     @Published var companyCitiesQueue: [CompanyCity] = []
@@ -40,6 +42,7 @@ class MainViewModel: ObservableObject {
         )
     }()
     
+    // initialize vals for computational efficiency
     private var sortedCitiesByAdjustedSalary: [City] = []
     private var sortedCitiesByUnadjustedSalary: [City] = []
     private var sortedCitiesBySoftwareJobs: [City] = []

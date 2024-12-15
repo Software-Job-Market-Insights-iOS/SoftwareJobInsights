@@ -27,7 +27,7 @@ struct Company {
     var maxTotalYearlyComp: Int
     
     var avgTotalCompAllLevels: Int?
-    var avgTotalCompByLevel: [String: Int]?
+    var avgTotalCompByLevel: [(String, Int)]?
     
     var cityJobs: [String: [LevelsElement]]
     var citySummaries: [String: CompanyCitySummary]
@@ -120,11 +120,13 @@ class CompaniesModel {
                 }
             }
             
-            var avgTotalCompByLevel: [String: Int] = [:]
+            var avgTotalCompByLevel: [(String, Int)] = []
             for (lvl, tots) in totalTotalCompByLevelAndQuantity {
-                avgTotalCompByLevel[lvl] = (tots.0 / tots.1)
+                avgTotalCompByLevel.append((lvl, tots.0 / tots.1))
             }
             
+            avgTotalCompByLevel.sort { $0.1 < $1.1 }  // Sort by avg compensation
+                                    
             companies[company]!.avgTotalCompByLevel = avgTotalCompByLevel
             companies[company]!.avgTotalCompAllLevels = totalTotalComp / totalTotalQuantity
         }

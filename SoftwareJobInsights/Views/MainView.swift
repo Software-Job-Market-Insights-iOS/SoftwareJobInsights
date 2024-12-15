@@ -34,6 +34,9 @@ struct MainView: View {
                     CityNavigationView(city: city)
                 case .companyCity(let companyCity):
                     CompanyCityNavigationView(companyCity: companyCity)
+                        .navigationDestination(item: $mainViewModel.selectedCompanyDetails) { companyName in
+                            CompanyNavigationView(companyName: companyName, company: mainViewModel.getCompany(companyName: companyName))
+                        }
                 }
             }
         }

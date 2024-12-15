@@ -166,6 +166,7 @@ extension MainViewModel {
         
         let citySummaries = company.citySummaries
             .values
+            .filter { idxOfCities.keys.contains($0.city) }
             .sorted { $0.totalTotalYearlyComp / $0.numOfJobs > $1.totalTotalYearlyComp / $1.numOfJobs }
             .prefix(num)
             .map { $0 }
@@ -186,10 +187,19 @@ extension MainViewModel {
     }
     
     func getCityByName(name: String) -> City {
-        cities[idxOfCities[name]!]
+        return cities[idxOfCities[name]!]
     }
     
     func getNationwideAvgCompForCompany(companyName: String) -> Int {
         return mainModel.companies.companies[companyName]!.avgTotalCompAllLevels!
+    }
+    
+    // String is name of lvl, Int is average total yearly compensation
+    func getSortedLevelDataForCompany(companyName: String) -> [(String, Int)] {
+        mainModel.companies.companies[companyName]!.avgTotalCompByLevel!
+    }
+    
+    func getCompany(companyName: String) -> Company {
+        mainModel.companies.companies[companyName]!
     }
 }

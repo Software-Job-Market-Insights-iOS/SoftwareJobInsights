@@ -262,7 +262,7 @@ struct ItemPickerView: View {
                     .disabled(isAlreadySelected(mapLoc, mainViewModel: mainViewModel))
                 }
             }
-            .navigationTitle("Select \(mainViewModel.isCompanyMode ? "Company" : "City")")
+            .navigationTitle("Select City")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {

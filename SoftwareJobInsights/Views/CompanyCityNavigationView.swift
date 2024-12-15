@@ -96,6 +96,19 @@ struct CompanyCityNavigationView: View {
                                    value: "\(cityData?.density.formatted() ?? "N/A") per sq mi")
                 }
                 
+                Button(action: {
+                    mainViewModel.selectedCompanyDetails = mainViewModel.selectedCompany
+                }) {
+                    Text("View Company Details")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                }
+                .padding(.top, 12)
+                
                 // Additional Context
                 Section("Note") {
                     Text("Compensation data is based on aggregated information for \(companyCity.name)")
