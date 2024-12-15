@@ -62,8 +62,7 @@ struct CompanyCityNavigationView: View {
                 }
                 .listRowBackground(Color.clear)
                 // Compensation Breakdown
-                Section("Compensation Details") {
-                    LabeledContent("Total Yearly Comp", value: "$\(Int(companyCity.averageTotalYearlyComp).formatted())")
+                Section("Overall City Compensation") {
                     LabeledContent("City Mean Salary (Adjusted)",
                                    value: "$\(Int(cityData?.meanSalaryAdjusted ?? 0).formatted())")
                     LabeledContent("City Mean Salary (Unadjusted)",
