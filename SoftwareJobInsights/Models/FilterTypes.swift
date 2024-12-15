@@ -9,13 +9,13 @@ import Foundation
 
 enum FilterType: Identifiable, Equatable, Hashable {
     case city(CityFilterType)
-    case company(CompanyFilterType)
+    case companyCity(CompanyFilterType)
     
     var id: String {
         switch self {
         case .city(let cityFilter):
             return "city_\(cityFilter.id)"
-        case .company(let companyFilter):
+        case .companyCity(let companyFilter):
             return "company_\(companyFilter.id)"
         }
     }
@@ -23,14 +23,14 @@ enum FilterType: Identifiable, Equatable, Hashable {
     static func == (lhs: FilterType, rhs: FilterType) -> Bool {
         switch (lhs, rhs) {
         case (.city(let a), .city(let b)): return a == b
-        case (.company(let a), .company(let b)): return a == b
+        case (.companyCity(let a), .companyCity(let b)): return a == b
         default: return false
         }
     }
     
     static func getAllCases(isCompanyMode: Bool) -> [FilterType] {
         if isCompanyMode {
-            return CompanyFilterType.allCases.map { .company($0) }
+            return CompanyFilterType.allCases.map { .companyCity($0) }
         } else {
             return CityFilterType.allCases.map { .city($0) }
         }
@@ -40,7 +40,7 @@ enum FilterType: Identifiable, Equatable, Hashable {
         switch self {
         case .city(let cityFilter):
             return cityFilter.title
-        case .company(let companyFilter):
+        case .companyCity(let companyFilter):
             return companyFilter.title
         }
     }
@@ -49,7 +49,7 @@ enum FilterType: Identifiable, Equatable, Hashable {
         switch self {
         case .city(let cityFilter):
             return cityFilter.icon
-        case .company(let companyFilter):
+        case .companyCity(let companyFilter):
             return companyFilter.icon
         }
     }

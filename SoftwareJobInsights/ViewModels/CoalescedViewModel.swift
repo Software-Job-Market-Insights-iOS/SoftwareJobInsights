@@ -60,7 +60,7 @@ enum MapLocation: Identifiable, Hashable {
     }
 }
 
-struct City: Identifiable {
+struct City: Identifiable, Hashable {
     let id: Int
     let name: String
     let meanSalaryAdjusted: Double
@@ -77,7 +77,7 @@ struct City: Identifiable {
     let density: Int
 }
 
-struct CompanyCity: Identifiable {
+struct CompanyCity: Identifiable, Hashable {
     let id: Int
     let name: String
     

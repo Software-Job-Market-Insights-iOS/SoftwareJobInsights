@@ -124,7 +124,7 @@ class ColorViewModel: ObservableObject {
             }
             return .gray
         case .companyCity(let companyCity):
-            if case .company(let companyFilter) = filterType {
+            if case .companyCity(let companyFilter) = filterType {
                 return getColorCompanyMode(companyCity: companyCity, filter: companyFilter)
             }
             return .gray

@@ -23,6 +23,10 @@ class MainViewModel: ObservableObject {
     @Published var selectedCompany = "Apple"
     @Published var numOfCitiesCompany: Int = 15
     
+    // comparison queue arrays
+    @Published var citiesQueue: [City] = []
+    @Published var companyCitiesQueue: [CompanyCity] = []
+    
     init() {
         self.mainModel = MainModel()
         (self.cities, self.idxOfCities) = Self.initAllCities(mainModel: mainModel)
@@ -89,7 +93,7 @@ class MainViewModel: ObservableObject {
             return "0"
             
         case .companyCity(let companyCity):
-            if case let .company(companyFilter) = filterType {
+            if case let .companyCity(companyFilter) = filterType {
                 switch companyFilter {
                 case .averageTotalComp:
                     return "$\(Int(companyCity.averageTotalYearlyComp).formatted())"

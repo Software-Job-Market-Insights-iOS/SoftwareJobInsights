@@ -13,51 +13,63 @@ enum ComparisonMode {
 }
 
 struct ComparisonView: View {
-    @State private var mode: ComparisonMode = .city
-    @State private var selectedItems: [Any] = []
-    @State private var showingItemPicker = false
+    @EnvironmentObject var mainViewModel: MainViewModel
     
-    // Computed properties for type safety
-    var selectedCities: [City] {
-        selectedItems.compactMap { $0 as? City }
+    @State private var showingItemPicker: Bool = false
+
+    func getCurNumQueueItems() -> Int {
+        mainViewModel.isCompanyMode ? mainViewModel.companyCitiesQueue.count : mainViewModel.citiesQueue.count
     }
-    
-    var selectedCompanies: [CompanyCity] {
-        selectedItems.compactMap { $0 as? CompanyCity }
-    }
-    
+        
     var body: some View {
         VStack(spacing: 16) {
-            // Mode Selector
-            Picker("Mode", selection: $mode) {
-                Text("Cities").tag(ComparisonMode.city)
-                Text("Companies").tag(ComparisonMode.company)
+            Picker("Mode", selection: $mainViewModel.isCompanyMode) {
+                Text("Cities").tag(false)
+                Text("Companies").tag(true)
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
             
-            // Selected Items Display
+            if mainViewModel.isCompanyMode {
+                CompanySearchView()
+            }
+            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    ForEach(0..<4) { index in
-                        if index < selectedItems.count {
-                            ItemCard(item: selectedItems[index], mode: mode)
-                        } else if selectedItems.count < 4 {
+                    Group {
+                        if mainViewModel.isCompanyMode {
+                            ForEach(mainViewModel.companyCitiesQueue) { company in
+                                ItemCard(companyCity: company)
+                                    .transition(.scale)
+                            }
+                        } else {
+                            ForEach(mainViewModel.citiesQueue) { city in
+                                ItemCard(city: city)
+                                    .transition(.scale)
+                            }
+                        }
+                    }
+                    
+                    if getCurNumQueueItems() < 4 {
+                        ForEach(0..<(4 - getCurNumQueueItems()), id: \.self) { _ in
                             AddItemButton(action: { showingItemPicker = true })
+                                .transition(.scale)
                         }
                     }
                 }
                 .padding(.horizontal)
+                .animation(.spring, value: mainViewModel.companyCitiesQueue)
+                .animation(.spring, value: mainViewModel.citiesQueue)
             }
             
             // Comparison Section
-            if selectedItems.count >= 2 {
+            if getCurNumQueueItems() >= 2 {
                 ScrollView {
                     VStack(spacing: 20) {
-                        if mode == .city {
-                            CityMetricRows(cities: selectedCities)
+                        if mainViewModel.isCompanyMode {
+                            CompanyMetricRows(companies: mainViewModel.companyCitiesQueue)
                         } else {
-                            CompanyMetricRows(companies: selectedCompanies)
+                            CityMetricRows(cities: mainViewModel.citiesQueue)
                         }
                     }
                     .padding()
@@ -69,50 +81,56 @@ struct ComparisonView: View {
                 )
             }
         }
-        .navigationTitle("Compare \(mode == .city ? "Cities" : "Companies")")
+        .navigationTitle("Compare \(mainViewModel.isCompanyMode ? "Companies" : "Cities")")
         .sheet(isPresented: $showingItemPicker) {
-            ItemPickerView(mode: mode, selectedItems: $selectedItems)
+            ItemPickerView()
         }
     }
 }
 
 struct ItemCard: View {
-    let item: Any
-    let mode: ComparisonMode
+    @EnvironmentObject var mainViewModel: MainViewModel
+    var city: City? = nil
+    var companyCity: CompanyCity? = nil
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(getName())
-                .font(.headline)
-            Text(getSubtitle())
-                .font(.subheadline)
-                .foregroundColor(.gray)
-        }
-        .padding()
-        .frame(width: 150)
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(10)
-    }
-    
-    private func getName() -> String {
-        if mode == .city {
-            return (item as? City)?.name ?? ""
-        } else {
-            return (item as? CompanyCity)?.name ?? ""
-        }
-    }
-    
-    private func getSubtitle() -> String {
-        if mode == .city {
-            if let city = item as? City {
-                return "\(city.population) people"
+        ZStack(alignment: .topTrailing) {
+            // Main content
+            VStack(alignment: .leading) {
+                if let city = city {
+                    Text(city.name)
+                        .font(.headline)
+                        .padding(.trailing, 24)
+                    Text("\(city.population) people")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                } else if let company = companyCity {
+                    Text(company.name)
+                        .font(.headline)
+                        .padding(.trailing, 24)
+                    Text("\(company.numOfJobs) jobs")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
             }
-        } else {
-            if let company = item as? CompanyCity {
-                return "\(company.numOfJobs) jobs"
+            .padding()
+            .frame(width: 150)
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(10)
+            
+            Button(action: {
+                if let city = city {
+                    mainViewModel.citiesQueue.removeAll(where: { $0.id == city.id })
+                } else if let company = companyCity {
+                    mainViewModel.companyCitiesQueue.removeAll(where: { $0.id == company.id })
+                }
+            }) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 20))
             }
+            .padding(8)
         }
-        return ""
     }
 }
 
@@ -223,47 +241,28 @@ struct AddItemButton: View {
 }
 
 struct ItemPickerView: View {
-    let mode: ComparisonMode
-    @Binding var selectedItems: [Any]
+    @EnvironmentObject var mainViewModel: MainViewModel
     @Environment(\.dismiss) var dismiss
-    
-    // Sample data - replace with your actual data source
-    let cities = [
-        City(id: 1, name: "San Francisco", meanSalaryAdjusted: 120000, meanSalaryUnadjusted: 150000, meanSalaryUnadjustedAllOccupations: 80000, quantitySoftwareJobs: 50000, medianHomePrice: 1200000, costOfLivingAverage: 95.0, rentAverage: 3000, latitude: 37.7749, longitude: -122.4194, population: 874961, density: 18838),
-        // Add more cities...
-    ]
-    
-    let companies = [
-        CompanyCity(id: 1, name: "Tech Corp", averageTotalYearlyComp: 180000, numOfJobs: 1000, latitude: 37.7749, longitude: -122.4194),
-        // Add more companies...
-    ]
     
     var body: some View {
         NavigationView {
             List {
-                if mode == .city {
-                    ForEach(cities) { city in
-                        Button(action: {
-                            selectedItems.append(city)
-                            dismiss()
-                        }) {
-                            Text(city.name)
+                ForEach(mainViewModel.getCurrentLocations()) { mapLoc in
+                    Button(action: {
+                        switch mapLoc {
+                        case .city(let city):
+                            mainViewModel.citiesQueue.append(city)
+                        case .companyCity(let companyCity):
+                            mainViewModel.companyCitiesQueue.append(companyCity)
                         }
-                        .disabled(selectedItems.contains(where: { ($0 as? City)?.id == city.id }))
+                        dismiss()
+                    }) {
+                        Text(mapLoc.name)
                     }
-                } else {
-                    ForEach(companies) { company in
-                        Button(action: {
-                            selectedItems.append(company)
-                            dismiss()
-                        }) {
-                            Text(company.name)
-                        }
-                        .disabled(selectedItems.contains(where: { ($0 as? CompanyCity)?.id == company.id }))
-                    }
+                    .disabled(isAlreadySelected(mapLoc, mainViewModel: mainViewModel))
                 }
             }
-            .navigationTitle("Select \(mode == .city ? "City" : "Company")")
+            .navigationTitle("Select \(mainViewModel.isCompanyMode ? "Company" : "City")")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
@@ -273,4 +272,18 @@ struct ItemPickerView: View {
             }
         }
     }
+    
+    func isAlreadySelected(_ mapLoc: MapLocation, mainViewModel: MainViewModel) -> Bool {
+        switch mapLoc {
+        case .city(let city):
+            return mainViewModel.citiesQueue.contains(city)
+        case .companyCity(let companyCity):
+            return mainViewModel.companyCitiesQueue.contains(companyCity)
+        }
+    }
+}
+
+#Preview {
+    ComparisonView()
+        .environmentObject(MainViewModel())
 }

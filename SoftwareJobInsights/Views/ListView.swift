@@ -18,74 +18,7 @@ struct ListContainer: View {
     var body: some View {
         NavigationView {
             VStack {
-                Picker("View Mode", selection: $mainViewModel.isCompanyMode) {
-                    Text("City").tag(false)
-                    Text("Company").tag(true)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                
-                if mainViewModel.isCompanyMode {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Text("Selected Company:")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                            Text(mainViewModel.selectedCompany)
-                                .font(.subheadline)
-                                .foregroundColor(.blue)
-                        }
-                        .padding(.horizontal)
-                        
-                        // Search Field
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.gray)
-                            TextField("Search companies...", text: $mainViewModel.companySearchQuery)
-                                .autocorrectionDisabled()
-                        }
-                        .padding(10)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
-                        
-                        if !mainViewModel.companySearchQuery.isEmpty {
-                            VStack(spacing: 2) {
-                                ForEach(topFiveCompanies, id: \.self) { companyName in
-                                    Button(action: {
-                                        mainViewModel.selectedCompany = companyName
-                                        mainViewModel.companySearchQuery = ""
-                                    }) {
-                                        HStack {
-                                            Text(companyName)
-                                                .foregroundColor(.primary)
-                                            Spacer()
-                                        }
-                                        .padding(.vertical, 8)
-                                        .padding(.horizontal, 10)
-                                        .background(Color.gray.opacity(0.05))
-                                    }
-                                }
-                            }
-                            .background(Color.white)
-                            .cornerRadius(8)
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(mainViewModel.getFilterTypes(), id: \.self) { filter in
-                            FilterButton(
-                                filter: filter,
-                                isSelected: mainViewModel.isCurrentFilter(filter),
-                                action: { mainViewModel.currentFilter = filter }
-                            )
-                        }
-                    }
-                    .padding(.horizontal)
-                }
+                FiltersView()
                 
                 ScrollView {
                     LazyVStack(spacing: 8) {
@@ -158,7 +91,6 @@ struct DetailView: View {
     }
 }
 
-// Preview
 #Preview {
     ListContainer()
         .environmentObject(MainViewModel())
