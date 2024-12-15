@@ -105,7 +105,7 @@ extension MainViewModel {
             }
             
             let city = City(
-                id: loc.fips,
+                id: idx,
                 name: cityName,
                 
                 meanSalaryAdjusted: cityBackend.meanSalaryAdjusted,
@@ -171,13 +171,13 @@ extension MainViewModel {
             .map { $0 }
         
         var companyCities: [CompanyCity] = []
-        for citySummary in citySummaries {
+        for (idx, citySummary) in Array(citySummaries).enumerated() {
             guard let loc = mainModel.locations.locations[citySummary.city] else {
                 continue // If we don't have the loc, it is likely an international city
                 // TODO: maybe handle this better later, could filter out international cities
                 // when loading originally
             }
-            let companyCity = CompanyCity(id: loc.fips, name: citySummary.city,averageTotalYearlyComp: Double(citySummary.totalTotalYearlyComp / citySummary.numOfJobs), numOfJobs: citySummary.numOfJobs, latitude: loc.latitude, longitude: loc.longitude)
+            let companyCity = CompanyCity(id: idx, name: citySummary.city,averageTotalYearlyComp: Double(citySummary.totalTotalYearlyComp / citySummary.numOfJobs), numOfJobs: citySummary.numOfJobs, latitude: loc.latitude, longitude: loc.longitude)
             
             companyCities.append(companyCity)
         }
