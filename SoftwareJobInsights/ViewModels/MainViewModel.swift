@@ -58,8 +58,7 @@ class MainViewModel: ObservableObject {
     
     func getCurrentLocations() -> [MapLocation] {
         if isCompanyMode {
-            return getTopCompanyCitiesByTotalYearlyComp(num: numOfCitiesCompany)
-                .map { MapLocation.companyCity($0) }
+            return getTopCompanyCities(num: numOfCitiesCompany, sortBy: selectedCompanyFilter).map { MapLocation.companyCity($0) }
         } else {
             let sortedCities: [City]
             switch selectedCityFilter {

@@ -161,31 +161,44 @@ extension MainViewModel {
             .map { $0 }
     }
     
-    func getTopCompanyCitiesByTotalYearlyComp(num: Int) -> [CompanyCity] {
-        let company = mainModel.companies.companies[selectedCompany]!
-        
-        let citySummaries = company.citySummaries
-            .values
-            .filter { idxOfCities.keys.contains($0.city) }
-            .sorted { $0.totalTotalYearlyComp / $0.numOfJobs > $1.totalTotalYearlyComp / $1.numOfJobs }
-            .prefix(num)
-            .map { $0 }
-        
-        var companyCities: [CompanyCity] = []
-        for (idx, citySummary) in Array(citySummaries).enumerated() {
-            guard let loc = mainModel.locations.locations[citySummary.city] else {
-                continue // If we don't have the loc, it is likely an international city
-                // TODO: maybe handle this better later, could filter out international cities
-                // when loading originally
-            }
-            let companyCity = CompanyCity(id: idx, name: citySummary.city,averageTotalYearlyComp: Double(citySummary.totalTotalYearlyComp / citySummary.numOfJobs), numOfJobs: citySummary.numOfJobs, latitude: loc.latitude, longitude: loc.longitude)
-            
-            companyCities.append(companyCity)
-        }
-        
-        return companyCities
+    func getTopCompanyCities(num: Int, sortBy: CompanyFilterType) -> [CompanyCity] {
+       let company = mainModel.companies.companies[selectedCompany]!
+       
+       let citySummaries = company.citySummaries
+           .values
+           .filter { idxOfCities.keys.contains($0.city) }
+           .sorted { first, second in
+               switch sortBy {
+               case .averageTotalComp:
+                   return first.totalTotalYearlyComp / first.numOfJobs >
+                          second.totalTotalYearlyComp / second.numOfJobs
+               case .numJobs:
+                   return first.numOfJobs > second.numOfJobs
+               }
+           }
+           .prefix(num)
+           .map { $0 }
+       
+       var companyCities: [CompanyCity] = []
+       for (idx, citySummary) in Array(citySummaries).enumerated() {
+           guard let loc = mainModel.locations.locations[citySummary.city] else {
+               continue
+           }
+           let companyCity = CompanyCity(
+               id: idx,
+               name: citySummary.city,
+               averageTotalYearlyComp: Double(citySummary.totalTotalYearlyComp / citySummary.numOfJobs),
+               numOfJobs: citySummary.numOfJobs,
+               latitude: loc.latitude,
+               longitude: loc.longitude
+           )
+           
+           companyCities.append(companyCity)
+       }
+       
+       return companyCities
     }
-    
+        
     func getCityByName(name: String) -> City {
         return cities[idxOfCities[name]!]
     }
