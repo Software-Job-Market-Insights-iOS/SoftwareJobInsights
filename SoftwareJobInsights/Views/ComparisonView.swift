@@ -110,7 +110,7 @@ struct ItemCard: View {
                     Text(city.name)
                         .font(.headline)
                         .padding(.trailing, 24)
-                    Text("\(city.population) people")
+                    Text("$\(city.meanSalaryAdjusted.formatted())")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 } else if let companyCity = companyCity {
