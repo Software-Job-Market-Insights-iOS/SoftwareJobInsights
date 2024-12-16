@@ -117,7 +117,7 @@ struct ItemCard: View {
                     Text(companyCity.name)
                         .font(.headline)
                         .padding(.trailing, 24)
-                    Text("\(companyCity.numOfJobs) jobs")
+                    Text("\(companyCity.numOfJobs) datapoints")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 } else if let company = company {
