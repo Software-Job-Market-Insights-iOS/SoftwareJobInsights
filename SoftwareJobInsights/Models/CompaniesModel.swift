@@ -19,9 +19,13 @@ struct CompanyCitySummary {
     var numOfJobs: Int
 }
 
-struct Company: Identifiable {
+struct Company: Identifiable, Equatable {
+    static func == (lhs: Company, rhs: Company) -> Bool {
+        lhs.company == rhs.company
+    }
+    
     var id: String { company }  // Using company name as the unique identifier
-    let company: String
+    var company: String
     
     // min and max total yearly comps are useful for normalizing the colors
     var minTotalYearlyComp: Int

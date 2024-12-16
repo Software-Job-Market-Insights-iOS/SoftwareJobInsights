@@ -26,6 +26,7 @@ struct CompanySearchView: View {
                     onSelect: { company in
                         mainViewModel.selectedCompany = company
                         mainViewModel.companySearchQuery = ""
+                        mainViewModel.companyCitiesQueue = []
                     }
                 )
             }

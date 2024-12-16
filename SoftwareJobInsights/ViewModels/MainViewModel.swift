@@ -30,6 +30,7 @@ class MainViewModel: ObservableObject {
     // comparison queue arrays
     @Published var citiesQueue: [City] = []
     @Published var companyCitiesQueue: [CompanyCity] = []
+    @Published var companiesQueue: [Company] = []
     
     init() {
         self.mainModel = MainModel()
