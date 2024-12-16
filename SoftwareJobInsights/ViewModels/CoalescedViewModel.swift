@@ -216,15 +216,22 @@ extension MainViewModel {
         mainModel.companies.companies[companyName]!
     }
     
+    func getNumDatapoints(company: Company) -> Int {
+       company.cityJobs.values.reduce(0) { $0 + $1.count }
+    }
+
     func getCompanies(companyFilterType: CompanyCityFilterType) -> [Company] {
-        Array(mainModel.companies.companies.values).sorted { first, second in
-            switch companyFilterType {
-            case .averageTotalComp:
-                return (first.avgTotalCompAllLevels ?? 0) > (second.avgTotalCompAllLevels ?? 0)
-            case .numJobs:
-                return first.citySummaries.values.reduce(0) { $0 + $1.numOfJobs } >
-                       second.citySummaries.values.reduce(0) { $0 + $1.numOfJobs }
-            }
-        }
+       Array(mainModel.companies.companies.values)
+           .filter { company in
+               getNumDatapoints(company: company) > 20  // using new function
+           }
+           .sorted { first, second in
+               switch companyFilterType {
+               case .averageTotalComp:
+                   return (first.avgTotalCompAllLevels ?? 0) > (second.avgTotalCompAllLevels ?? 0)
+               case .numJobs:
+                   return getNumDatapoints(company: first) > getNumDatapoints(company: second)  // using new function
+               }
+       }
     }
 }

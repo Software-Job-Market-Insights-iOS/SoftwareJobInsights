@@ -18,7 +18,7 @@ struct ListContainer: View {
     var body: some View {
         NavigationView {
             VStack {
-                FiltersView()
+                FiltersView(showAttributes: true)
                 
                 ScrollView {
                     LazyVStack(spacing: 8) {
@@ -62,7 +62,7 @@ struct CompanyListItemRow: View {
                 Text("$" + company.avgTotalCompAllLevels!.formatted())
                     .foregroundColor(.gray)
             case .numJobs:
-                Text(company.cityJobs.count.formatted())
+                Text(mainViewModel.getNumDatapoints(company: company).formatted())
                     .foregroundColor(.gray)
             }
         }

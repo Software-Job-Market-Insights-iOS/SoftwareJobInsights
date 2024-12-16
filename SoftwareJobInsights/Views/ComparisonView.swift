@@ -23,17 +23,9 @@ struct ComparisonView: View {
         
     var body: some View {
         VStack(spacing: 16) {
-            Picker("Mode", selection: $mainViewModel.isCompanyCityMode) {
-                Text("Cities").tag(false)
-                Text("Companies").tag(true)
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal)
             
-            if mainViewModel.isCompanyCityMode {
-                CompanySearchView()
-            }
-            
+            FiltersView(showAttributes: false)
+
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     Group {

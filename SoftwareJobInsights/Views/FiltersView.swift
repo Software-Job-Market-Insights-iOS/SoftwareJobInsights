@@ -111,6 +111,7 @@ struct FilterTypesView: View {
 // Main Filters View
 struct FiltersView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
+    let showAttributes: Bool
     
     var body: some View {
         VStack(spacing: 12) {
@@ -120,8 +121,8 @@ struct FiltersView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
-            .onChange(of: mainViewModel.isLocationMode) { isLocation in
-                if !isLocation {
+            .onChange(of: mainViewModel.isLocationMode) { oldValue, newValue in
+                if !newValue {
                     mainViewModel.isCompanyCityMode = true
                 }
             }
@@ -140,13 +141,15 @@ struct FiltersView: View {
                 CompanySearchView()
             }
             
-            // Filter Types
-            FilterTypesView()
+            if showAttributes {
+                // Filter Types
+                FilterTypesView()
+            }
         }
     }
 }
 
 #Preview {
-    FiltersView()
+    FiltersView(showAttributes: true)
         .environmentObject(MainViewModel())
 }
