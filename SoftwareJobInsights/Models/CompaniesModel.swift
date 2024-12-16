@@ -19,7 +19,8 @@ struct CompanyCitySummary {
     var numOfJobs: Int
 }
 
-struct Company {
+struct Company: Identifiable {
+    var id: String { company }  // Using company name as the unique identifier
     let company: String
     
     // min and max total yearly comps are useful for normalizing the colors

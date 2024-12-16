@@ -10,7 +10,7 @@ import SwiftUI
 
 class ColorViewModel: ObservableObject {
     @Published private var cityConfigurations: [CityFilterType: ColorConfig]
-    @Published private var companyConfigurations: [CompanyFilterType: ColorConfig]
+    @Published private var companyConfigurations: [CompanyCityFilterType: ColorConfig]
     
     init(cities: [City], companies: [Company]) {
         self.cityConfigurations = Self.createConfigurations(cities: cities)
@@ -42,18 +42,18 @@ class ColorViewModel: ObservableObject {
         ]
     }
     
-    private static func createCompanyConfigurations(companies: [Company]) -> [CompanyFilterType: ColorConfig] {
+    private static func createCompanyConfigurations(companies: [Company]) -> [CompanyCityFilterType: ColorConfig] {
         [
             .averageTotalComp: ColorConfig(
-                lowColor: CompanyFilterType.averageTotalComp.colorPair.low,
-                highColor: CompanyFilterType.averageTotalComp.colorPair.high,
+                lowColor: CompanyCityFilterType.averageTotalComp.colorPair.low,
+                highColor: CompanyCityFilterType.averageTotalComp.colorPair.high,
                 valueRange: calculateRange(values: companies.flatMap { company in
                     company.citySummaries.values.map { Double($0.totalTotalYearlyComp) / Double($0.numOfJobs) }
                 })
             ),
             .numJobs: ColorConfig(
-                lowColor: CompanyFilterType.numJobs.colorPair.low,
-                highColor: CompanyFilterType.numJobs.colorPair.high,
+                lowColor: CompanyCityFilterType.numJobs.colorPair.low,
+                highColor: CompanyCityFilterType.numJobs.colorPair.high,
                 valueRange: calculateRange(values: companies.flatMap { company in
                     company.citySummaries.values.map { Double($0.numOfJobs) }
                 })
@@ -95,7 +95,7 @@ class ColorViewModel: ObservableObject {
         return Color(red: r, green: g, blue: b)
     }
     
-    private func getColorCompanyMode(companyCity: CompanyCity, filter: CompanyFilterType) -> Color {
+    private func getColorCompanyMode(companyCity: CompanyCity, filter: CompanyCityFilterType) -> Color {
         let config = companyConfigurations[filter]!
         
         let value = switch filter {
@@ -116,7 +116,7 @@ class ColorViewModel: ObservableObject {
         return Color(red: r, green: g, blue: b)
     }
     
-    func getColor(for filterType: FilterType, mapLoc: MapLocation) -> Color {
+    func getColor(for filterType: MapLocFilterType, mapLoc: MapLocation) -> Color {
         switch mapLoc {
         case .city(let city):
             if case .city(let cityFilter) = filterType {

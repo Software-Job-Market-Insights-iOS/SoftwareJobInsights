@@ -9,9 +9,9 @@ import Foundation
 
 extension MainViewModel {
     
-    var currentFilter: FilterType {
+    var currentFilter: MapLocFilterType {
         get {
-            isCompanyMode ? .companyCity(selectedCompanyFilter) : .city(selectedCityFilter)
+            isCompanyCityMode ? .companyCity(selectedCompanyFilter) : .city(selectedCityFilter)
         }
         set {
             switch newValue {
@@ -23,11 +23,11 @@ extension MainViewModel {
         }
     }
     
-    func getFilterTypes() -> [FilterType] {
-        FilterType.getAllCases(isCompanyMode: isCompanyMode)
+    func getFilterTypes() -> [MapLocFilterType] {
+        MapLocFilterType.getAllCases(isCompanyMode: isCompanyCityMode)
     }
     
-    func isCurrentFilter(_ filter: FilterType) -> Bool {
+    func isCurrentFilter(_ filter: MapLocFilterType) -> Bool {
         switch (currentFilter, filter) {
         case (.city(let currentCity), .city(let otherCity)):
             return currentCity == otherCity

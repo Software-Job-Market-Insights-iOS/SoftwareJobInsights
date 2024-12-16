@@ -161,7 +161,7 @@ extension MainViewModel {
             .map { $0 }
     }
     
-    func getTopCompanyCities(num: Int, sortBy: CompanyFilterType) -> [CompanyCity] {
+    func getTopCompanyCities(num: Int, sortBy: CompanyCityFilterType) -> [CompanyCity] {
        let company = mainModel.companies.companies[selectedCompany]!
        
        let citySummaries = company.citySummaries
@@ -214,5 +214,17 @@ extension MainViewModel {
     
     func getCompany(companyName: String) -> Company {
         mainModel.companies.companies[companyName]!
+    }
+    
+    func getCompanies(companyFilterType: CompanyCityFilterType) -> [Company] {
+        Array(mainModel.companies.companies.values).sorted { first, second in
+            switch companyFilterType {
+            case .averageTotalComp:
+                return (first.avgTotalCompAllLevels ?? 0) > (second.avgTotalCompAllLevels ?? 0)
+            case .numJobs:
+                return first.citySummaries.values.reduce(0) { $0 + $1.numOfJobs } >
+                       second.citySummaries.values.reduce(0) { $0 + $1.numOfJobs }
+            }
+        }
     }
 }

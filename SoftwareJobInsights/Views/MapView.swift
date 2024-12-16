@@ -36,7 +36,7 @@ struct MapContainer: View {
                         
                         Divider()
                         
-                        if mainViewModel.isCompanyMode {
+                        if mainViewModel.isCompanyCityMode {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Search Companies:")
                                     .font(.headline)
@@ -86,8 +86,8 @@ struct MapContainer: View {
             
             VStack {
                 Button(action: { mainViewModel.toggleMode() }) {
-                    Label(mainViewModel.isCompanyMode ? mainViewModel.selectedCompany : "City Mode",
-                          systemImage: mainViewModel.isCompanyMode ? "building.2" : "map")
+                    Label(mainViewModel.isCompanyCityMode ? mainViewModel.selectedCompany : "City Mode",
+                          systemImage: mainViewModel.isCompanyCityMode ? "building.2" : "map")
                         .padding()
                         .background(.ultraThinMaterial)
                         .cornerRadius(10)
@@ -103,7 +103,7 @@ struct MapContainer: View {
 struct CustomAnnotation: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     let mapLocation: MapLocation
-    let filterType: FilterType
+    let filterType: MapLocFilterType
     @State private var isHovered = false
     @State private var showDetails = false
     
@@ -126,7 +126,7 @@ struct CustomAnnotation: View {
 
 struct MapView: View {
     let currentLocations: [MapLocation]
-    let filterType: FilterType
+    let filterType: MapLocFilterType
     
     @State private var position: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 39.8283, longitude: -98.5795),

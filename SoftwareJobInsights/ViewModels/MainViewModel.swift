@@ -12,13 +12,15 @@ class MainViewModel: ObservableObject {
     let cities: [City]
     let idxOfCities: [String: Int]
     
+    @Published var isLocationMode = true
+    
     @Published var selectedLocation: MapLocation?
     
-    @Published var isCompanyMode = false
+    @Published var isCompanyCityMode = false
     @Published var selectedCityFilter: CityFilterType = .adjustedSalary
     @Published var numOfCitiesCity: Int = 30
     
-    @Published var selectedCompanyFilter: CompanyFilterType = .averageTotalComp
+    @Published var selectedCompanyFilter: CompanyCityFilterType = .averageTotalComp
     @Published var companySearchQuery = ""
     @Published var selectedCompany = "Apple"
     @Published var numOfCitiesCompany: Int = 15
@@ -57,7 +59,7 @@ class MainViewModel: ObservableObject {
     }
     
     func getCurrentLocations() -> [MapLocation] {
-        if isCompanyMode {
+        if isCompanyCityMode {
             return getTopCompanyCities(num: numOfCitiesCompany, sortBy: selectedCompanyFilter).map { MapLocation.companyCity($0) }
         } else {
             let sortedCities: [City]
@@ -77,7 +79,7 @@ class MainViewModel: ObservableObject {
         }
     }
 
-    func getFormattedValue(for filterType: FilterType, from mapLocation: MapLocation) -> String {
+    func getFormattedValue(for filterType: MapLocFilterType, from mapLocation: MapLocation) -> String {
         switch mapLocation {
         case .city(let city):
             if case let .city(cityFilter) = filterType {
@@ -108,7 +110,7 @@ class MainViewModel: ObservableObject {
     }
     
     func toggleMode() {
-        isCompanyMode.toggle()
+        isCompanyCityMode.toggle()
     }
     
     var filteredCompanyNames: [String] {

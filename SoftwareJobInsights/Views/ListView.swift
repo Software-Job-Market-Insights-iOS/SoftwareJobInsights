@@ -22,21 +22,62 @@ struct ListContainer: View {
                 
                 ScrollView {
                     LazyVStack(spacing: 8) {
-                        ForEach(mainViewModel.getCurrentLocations()) { mapLoc in
-                            ListItemRow(filter: mainViewModel.currentFilter, mapLoc: mapLoc)
+                        
+                        if mainViewModel.isLocationMode {
+                            ForEach(mainViewModel.getCurrentLocations()) { mapLoc in
+                                MapLocListItemRow(filter: mainViewModel.currentFilter, mapLoc: mapLoc)
+                            }
+                            .padding(.horizontal)
+                        } else {
+                            ForEach(mainViewModel.getCompanies(companyFilterType: mainViewModel.selectedCompanyFilter)) { company in
+                                CompanyListItemRow(filter: mainViewModel.selectedCompanyFilter, company: company)
+                            }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
                     }
                 }
             }
-            .navigationTitle("List")
         }
     }
 }
 
-struct ListItemRow: View {
+struct CompanyListItemRow: View {
     @EnvironmentObject var mainViewModel: MainViewModel
-    let filter: FilterType
+    let filter: CompanyCityFilterType
+    let company: Company
+    
+    var body: some View {
+        HStack {
+            Image(systemName: filter.icon)
+                //.foregroundColor(mainViewModel.colorViewModel.getColor(for: filter, mapLoc: mapLoc))
+                .frame(width: 30)
+            
+            Text(company.company)
+                .font(.body)
+            
+            Spacer()
+            
+            switch filter {
+            case .averageTotalComp:
+                Text("$" + company.avgTotalCompAllLevels!.formatted())
+                    .foregroundColor(.gray)
+            case .numJobs:
+                Text(company.cityJobs.count.formatted())
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(10)
+        .onTapGesture {
+            mainViewModel.selectedCompanyDetails = company.company
+        }
+    }
+}
+
+struct MapLocListItemRow: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
+    let filter: MapLocFilterType
     let mapLoc: MapLocation
     
     var body: some View {
@@ -63,7 +104,7 @@ struct ListItemRow: View {
 }
 
 struct FilterButton: View {
-    let filter: FilterType
+    let filter: MapLocFilterType
     let isSelected: Bool
     let action: () -> Void
     

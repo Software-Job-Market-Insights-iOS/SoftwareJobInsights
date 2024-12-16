@@ -7,9 +7,9 @@
 
 import Foundation
 
-enum FilterType: Identifiable, Equatable, Hashable {
+enum MapLocFilterType: Identifiable, Equatable, Hashable {
     case city(CityFilterType)
-    case companyCity(CompanyFilterType)
+    case companyCity(CompanyCityFilterType)
     
     var id: String {
         switch self {
@@ -20,7 +20,7 @@ enum FilterType: Identifiable, Equatable, Hashable {
         }
     }
     
-    static func == (lhs: FilterType, rhs: FilterType) -> Bool {
+    static func == (lhs: MapLocFilterType, rhs: MapLocFilterType) -> Bool {
         switch (lhs, rhs) {
         case (.city(let a), .city(let b)): return a == b
         case (.companyCity(let a), .companyCity(let b)): return a == b
@@ -28,9 +28,9 @@ enum FilterType: Identifiable, Equatable, Hashable {
         }
     }
     
-    static func getAllCases(isCompanyMode: Bool) -> [FilterType] {
+    static func getAllCases(isCompanyMode: Bool) -> [MapLocFilterType] {
         if isCompanyMode {
-            return CompanyFilterType.allCases.map { .companyCity($0) }
+            return CompanyCityFilterType.allCases.map { .companyCity($0) }
         } else {
             return CityFilterType.allCases.map { .city($0) }
         }
@@ -55,7 +55,7 @@ enum FilterType: Identifiable, Equatable, Hashable {
     }
 }
 
-enum CompanyFilterType: Identifiable, CaseIterable {
+enum CompanyCityFilterType: Identifiable, CaseIterable {
     case averageTotalComp
     case numJobs
     
@@ -73,7 +73,7 @@ enum CompanyFilterType: Identifiable, CaseIterable {
     var title: String {
         switch self {
         case .averageTotalComp: return "Average Total Compensation"
-        case .numJobs: return "Number of Jobs"
+        case .numJobs: return "Number of Datapoints"
         }
     }
     

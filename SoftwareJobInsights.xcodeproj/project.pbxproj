@@ -10,7 +10,7 @@
 		352B35DE2D0A1FE300885497 /* uscities.csv in Resources */ = {isa = PBXBuildFile; fileRef = 352B35DB2D0A1FE300885497 /* uscities.csv */; };
 		352B35E02D0A1FE300885497 /* SoftwareDeveloperIncomeExpensesperUSACity.csv in Resources */ = {isa = PBXBuildFile; fileRef = 352B35DD2D0A1FE300885497 /* SoftwareDeveloperIncomeExpensesperUSACity.csv */; };
 		3539CE5D2D0CB60B00B2C0C0 /* ColorsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3539CE5C2D0CB60B00B2C0C0 /* ColorsModel.swift */; };
-		3539CE5F2D0CB72700B2C0C0 /* FilterTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3539CE5E2D0CB72700B2C0C0 /* FilterTypes.swift */; };
+		3539CE5F2D0CB72700B2C0C0 /* LocationFilterTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3539CE5E2D0CB72700B2C0C0 /* LocationFilterTypes.swift */; };
 		3539CE612D0CBF4D00B2C0C0 /* ColorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3539CE602D0CBF4D00B2C0C0 /* ColorViewModel.swift */; };
 		357C20012CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357C20002CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift */; };
 		357C20052CFF804000DDEDA8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 357C20042CFF804000DDEDA8 /* Assets.xcassets */; };
@@ -37,7 +37,7 @@
 		352B35DB2D0A1FE300885497 /* uscities.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = uscities.csv; sourceTree = "<group>"; };
 		352B35DD2D0A1FE300885497 /* SoftwareDeveloperIncomeExpensesperUSACity.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SoftwareDeveloperIncomeExpensesperUSACity.csv; sourceTree = "<group>"; };
 		3539CE5C2D0CB60B00B2C0C0 /* ColorsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsModel.swift; sourceTree = "<group>"; };
-		3539CE5E2D0CB72700B2C0C0 /* FilterTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTypes.swift; sourceTree = "<group>"; };
+		3539CE5E2D0CB72700B2C0C0 /* LocationFilterTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFilterTypes.swift; sourceTree = "<group>"; };
 		3539CE602D0CBF4D00B2C0C0 /* ColorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewModel.swift; sourceTree = "<group>"; };
 		357C1FFD2CFF803E00DDEDA8 /* SoftwareJobInsights.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoftwareJobInsights.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		357C20002CFF803E00DDEDA8 /* SoftwareJobInsightsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftwareJobInsightsApp.swift; sourceTree = "<group>"; };
@@ -128,7 +128,7 @@
 				35B267472CFF92FE00E76C0F /* CitiesModel.swift */,
 				358F6FCA2D0258B9001EE8F5 /* LocationsModel.swift */,
 				3539CE5C2D0CB60B00B2C0C0 /* ColorsModel.swift */,
-				3539CE5E2D0CB72700B2C0C0 /* FilterTypes.swift */,
+				3539CE5E2D0CB72700B2C0C0 /* LocationFilterTypes.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -238,7 +238,7 @@
 				35DE62E72D0E0AA100DC4AAC /* FilterTypesViewModel.swift in Sources */,
 				3539CE612D0CBF4D00B2C0C0 /* ColorViewModel.swift in Sources */,
 				3597A7922D0F49F100DC29A1 /* FiltersView.swift in Sources */,
-				3539CE5F2D0CB72700B2C0C0 /* FilterTypes.swift in Sources */,
+				3539CE5F2D0CB72700B2C0C0 /* LocationFilterTypes.swift in Sources */,
 				35F06EC02D0E3C6500617051 /* CompanyCityNavigationView.swift in Sources */,
 				358F6FC12D0251F2001EE8F5 /* MapView.swift in Sources */,
 				35F06EBE2D0E3C3600617051 /* CityNavigationView.swift in Sources */,

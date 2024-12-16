@@ -18,26 +18,26 @@ struct ComparisonView: View {
     @State private var showingItemPicker: Bool = false
 
     func getCurNumQueueItems() -> Int {
-        mainViewModel.isCompanyMode ? mainViewModel.companyCitiesQueue.count : mainViewModel.citiesQueue.count
+        mainViewModel.isCompanyCityMode ? mainViewModel.companyCitiesQueue.count : mainViewModel.citiesQueue.count
     }
         
     var body: some View {
         VStack(spacing: 16) {
-            Picker("Mode", selection: $mainViewModel.isCompanyMode) {
+            Picker("Mode", selection: $mainViewModel.isCompanyCityMode) {
                 Text("Cities").tag(false)
                 Text("Companies").tag(true)
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
             
-            if mainViewModel.isCompanyMode {
+            if mainViewModel.isCompanyCityMode {
                 CompanySearchView()
             }
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     Group {
-                        if mainViewModel.isCompanyMode {
+                        if mainViewModel.isCompanyCityMode {
                             ForEach(mainViewModel.companyCitiesQueue) { company in
                                 ItemCard(companyCity: company)
                                     .transition(.scale)
@@ -66,7 +66,7 @@ struct ComparisonView: View {
             if getCurNumQueueItems() >= 2 {
                 ScrollView {
                     VStack(spacing: 20) {
-                        if mainViewModel.isCompanyMode {
+                        if mainViewModel.isCompanyCityMode {
                             CompanyMetricRows(companies: mainViewModel.companyCitiesQueue)
                         } else {
                             CityMetricRows(cities: mainViewModel.citiesQueue)
@@ -81,7 +81,7 @@ struct ComparisonView: View {
                 )
             }
         }
-        .navigationTitle("Compare \(mainViewModel.isCompanyMode ? "Companies" : "Cities")")
+        .navigationTitle("Compare \(mainViewModel.isCompanyCityMode ? "Companies" : "Cities")")
         .sheet(isPresented: $showingItemPicker) {
             ItemPickerView()
         }

@@ -114,16 +114,29 @@ struct FiltersView: View {
     
     var body: some View {
         VStack(spacing: 12) {
-            // Mode Switch
-            Picker("View Mode", selection: $mainViewModel.isCompanyMode) {
-                Text("City").tag(false)
-                Text("Company").tag(true)
+            Picker("Item Mode", selection: $mainViewModel.isLocationMode) {
+                Text("Location").tag(true)
+                Text("Company").tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
+            .onChange(of: mainViewModel.isLocationMode) { isLocation in
+                if !isLocation {
+                    mainViewModel.isCompanyCityMode = true
+                }
+            }
+            
+            if mainViewModel.isLocationMode {
+                Picker("View Mode", selection: $mainViewModel.isCompanyCityMode) {
+                    Text("City").tag(false)
+                    Text("City of Company").tag(true)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding(.horizontal)
+            }
             
             // Company Search
-            if mainViewModel.isCompanyMode {
+            if (mainViewModel.isLocationMode && mainViewModel.isCompanyCityMode) {
                 CompanySearchView()
             }
             
